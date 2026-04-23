@@ -951,24 +951,12 @@ setInterval(()=>{
 },1000);
 
 // ─── INIT ───────────────────────────────────────────────────
-
-// ─── OEG API INTEGRATION ─────────────────────────────────────
-
+render();
 OEG.init(async (user) => {
-  // Inject user info vào sidebar
   const nameEl = document.querySelector('.user-name');
   const roleEl = document.querySelector('.user-role');
   if (nameEl) nameEl.textContent = user.name || user.email;
   if (roleEl) roleEl.textContent = user.role || 'User';
-
-  try {
-    const data = await OEG.get('m2', { branch: 'all', period: 'week' });
-    render(data);
-  } catch(err) {
-    console.warn('[OEG] API error, dùng data mẫu:', err.message);
-    OEG.showToast('Dùng data mẫu — ' + err.message, 'warn');
-    render();
-  }
 });
 
 </script>
