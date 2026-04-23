@@ -391,9 +391,63 @@ const BRANCHES = ['Stadium','Tây Sơn','LL Quân','Trần Vỹ','TQ Hoàn','Chi
 const DOW_NAMES = ['CN','T2','T3','T4','T5','T6','T7'];
 const DOW_W = [1.30,0.80,0.80,0.88,0.92,1.00,1.25];
 
-// Monthly KPIs
-const FNB_KPI = {'Stadium':70400000,'Tây Sơn':56000000,'LL Quân':46800000,'Trần Vỹ':52500000,'TQ Hoàn':52800000,'Chiến Thắng':43700000};
-const MART_KPI= {'Stadium':41600000,'Tây Sơn':33600000,'LL Quân':31200000,'Trần Vỹ':30000000,'TQ Hoàn':28800000,'Chiến Thắng':27600000};
+// Monthly KPIs T4/2026 — thật từ CONFIG_KPI Sheets
+const FNB_KPI = {'Stadium':425843172,'Tây Sơn':205727692,'LL Quân':224741105,'Trần Vỹ':222786036,'TQ Hoàn':203765738,'Chiến Thắng':187414122};
+const MART_KPI= {'Stadium':193480919,'Tây Sơn':204653651,'LL Quân':222219325,'Trần Vỹ':198421946,'TQ Hoàn':198501710,'Chiến Thắng':168504824};
+
+// ─── SHEETS DATA ─────────────────────────────────────────────
+const SHEET_ID = '17ld-H9xCP6YVEmlEH23g1O9xNy5aFptKv6gmj-ntFGA';
+let RAW_FNB  = {}; // "YYYY-MM-DD|branch" → {revenue, orders, aov}
+let RAW_MART = {}; // "YYYY-MM-DD|branch" → {revenue, transactions, aov}
+let SHEETS_LOADED = false;
+
+function parseVND(s){ return parseInt(String(s||0).replace(/\./g,''))||0; }
+
+async function loadSheetsData(){
+  const base = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+  async function fetchCSV(sheetName){
+    const r = await fetch(`${base}&sheet=${encodeURIComponent(sheetName)}`);
+    const text = await r.text();
+    const lines = text.trim().split('\n');
+    const header = lines[0].replace(/"/g,'').split(',');
+    return lines.slice(1).map(line=>{
+      const vals = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$)/g)||[];
+      const obj={};
+      header.forEach((h,i)=>{ obj[h.trim()]=(vals[i]||'').replace(/^"|"$/g,'').trim(); });
+      return obj;
+    });
+  }
+  const [fnbRows, martRows] = await Promise.all([
+    fetchCSV('RAW_FnB'), fetchCSV('RAW_Mart')
+  ]);
+  fnbRows.forEach(r=>{
+    const key=`${r.date}|${r.branch}`;
+    if(!r.date||!r.branch) return;
+    RAW_FNB[key]={revenue:parseVND(r.revenue),orders:parseInt(r.orders)||0,aov:parseVND(r.aov)};
+  });
+  martRows.forEach(r=>{
+    const key=`${r.date}|${r.branch}`;
+    if(!r.date||!r.branch) return;
+    RAW_MART[key]={revenue:parseVND(r.revenue),transactions:parseInt(r.transactions)||0,aov:parseVND(r.aov)};
+  });
+  SHEETS_LOADED = true;
+  console.log(`[OEG M3] FnB: ${Object.keys(RAW_FNB).length} rows, Mart: ${Object.keys(RAW_MART).length} rows`);
+}
+
+function getRealBranchDay(ch, branch, date){
+  const key=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}|${branch}`;
+  const kpiMap = ch==='fnb'?FNB_KPI:MART_KPI;
+  const kpi = dayKPI(kpiMap, branch, date);
+  if(SHEETS_LOADED){
+    const raw = ch==='fnb' ? RAW_FNB[key] : RAW_MART[key];
+    if(raw && raw.revenue>0){
+      const bIdx = BRANCHES.indexOf(branch);
+      const fallback = genBranchDay(ch, branch, date, bIdx);
+      return {...fallback, revenue:raw.revenue, orders:raw.orders||raw.transactions||fallback.orders, aov:raw.aov||fallback.aov, kpi};
+    }
+  }
+  return genBranchDay(ch, branch, date, BRANCHES.indexOf(branch));
+}
 
 // FnB SKUs
 const FNB_SKUS = [
@@ -491,7 +545,7 @@ function buildDays(ch, n=7){
   for(let i=n-1;i>=0;i--){
     const d=new Date(today);d.setDate(today.getDate()-i);
     const branches={};
-    BRANCHES.forEach((b,idx)=>{branches[b]=genBranchDay(ch,b,d,idx);});
+    BRANCHES.forEach((b,idx)=>{branches[b]=getRealBranchDay(ch,b,d,idx);});
     days.push({date:d,branches});
   }
   return days;
@@ -507,7 +561,7 @@ function buildWeeks(ch, n=4){
       const skuAgg={};const catAgg={};
       for(let d=0;d<7;d++){
         const dt=new Date(today);dt.setDate(today.getDate()-w*7-d);
-        const dd=genBranchDay(ch,b,dt,idx);
+        const dd=getRealBranchDay(ch,b,dt);
         rev+=dd.revenue;kpi+=dd.kpi;orders+=dd.orders;margin+=dd.margin;cogs+=dd.cogs;
         dd.skuData.forEach(s=>{skuAgg[s.name]=(skuAgg[s.name]||{name:s.name,cat:s.cat,qty:0,revenue:0,price:s.price,cost:s.cost});skuAgg[s.name].qty+=s.qty;skuAgg[s.name].revenue+=s.revenue;});
         Object.keys(dd.catRevenue).forEach(c=>{catAgg[c]=(catAgg[c]||0)+dd.catRevenue[c];});
@@ -912,24 +966,28 @@ setInterval(()=>{
 },1000);
 
 
-// ─── OEG API INTEGRATION ─────────────────────────────────────
+// ─── INIT ─────────────────────────────────────────────────────
+// Bước 1: render ngay với KPI đúng (không random)
+render();
 
+// Bước 2: fetch data thật từ Sheets → re-render
+loadSheetsData().then(()=>{
+  cache = {}; // clear cache để rebuild với data thật
+  render();
+  console.log('[OEG M3] Updated with real Sheets data ✓');
+}).catch(err=>{
+  console.warn('[OEG M3] Sheets fetch failed:', err.message);
+});
+
+// Bước 3: Google Sign-In (optional — chỉ cần để submit form)
 OEG.init(async (user) => {
-  // Inject user info vào sidebar
   const nameEl = document.querySelector('.user-name');
   const roleEl = document.querySelector('.user-role');
   if (nameEl) nameEl.textContent = user.name || user.email;
   if (roleEl) roleEl.textContent = user.role || 'User';
-
-  try {
-    const data = await OEG.get('m3', { branch: 'all', period: 'week' });
-    render(data);
-  } catch(err) {
-    console.warn('[OEG] API error, dùng data mẫu:', err.message);
-    OEG.showToast('Dùng data mẫu — ' + err.message, 'warn');
-    render();
-  }
 });
+
+
 
 </script>
 </body>
