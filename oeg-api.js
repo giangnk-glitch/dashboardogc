@@ -11,8 +11,8 @@
 
 const OEG = (() => {
   // ── CẤU HÌNH — thay 2 dòng này sau khi deploy Apps Script ──
-  const API_URL     = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
-  const GOOGLE_CLIENT_ID = 'PASTE_YOUR_GOOGLE_CLIENT_ID_HERE';
+  const API_URL     = 'https://script.google.com/macros/s/AKfycbw5VPCXnn8ae1upCDb5DbkaDRyaKjJmUvVqqL-gphL2srZ8_mblqmDniCn2EuNSrDkfPg/exec';
+  const GOOGLE_CLIENT_ID = '273176228434-pj8aoucadhehrqj638o5da5e0l36e4t6.apps.googleusercontent.com';
   // ────────────────────────────────────────────────────────────
 
   let _token  = null;
