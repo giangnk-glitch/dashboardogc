@@ -866,23 +866,13 @@ function setSection(s,el){section=s;document.querySelectorAll('.stab').forEach(t
 setInterval(()=>{const n=new Date();document.getElementById('clock').textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;},1000);
 
 
-// ─── OEG API INTEGRATION ─────────────────────────────────────
-
+// ─── INIT ───────────────────────────────────────────────────
+renderAll();
 OEG.init(async (user) => {
-  // Inject user info vào sidebar
   const nameEl = document.querySelector('.user-name');
   const roleEl = document.querySelector('.user-role');
   if (nameEl) nameEl.textContent = user.name || user.email;
   if (roleEl) roleEl.textContent = user.role || 'User';
-
-  try {
-    const data = await OEG.get('m4', { branch: 'all', period: 'week' });
-    renderAll(data);
-  } catch(err) {
-    console.warn('[OEG] API error, dùng data mẫu:', err.message);
-    OEG.showToast('Dùng data mẫu — ' + err.message, 'warn');
-    renderAll();
-  }
 });
 
 </script>
