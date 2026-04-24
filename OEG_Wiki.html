@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>OEG Cyber Hub — Wiki Vận Hành</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--bg4:#21262d;--bg5:#2d333b;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#e6edf3;--muted:#8b949e;--dim:#484f58;
+  --red:#e8324a;--red-bg:rgba(232,50,74,0.12);
+  --green:#3fb950;--green-bg:rgba(63,185,80,0.12);
+  --amber:#d29922;--amber-bg:rgba(210,153,34,0.12);
+  --blue:#388bfd;--blue-bg:rgba(56,139,253,0.12);
+  --purple:#bc8cff;--purple-bg:rgba(188,140,255,0.12);
+  --cyan:#39d353;--pink:#f778ba;
+  --wiki:#e8324a;
+  --font:'Be Vietnam Pro',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --r:10px;--r2:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* ── LAYOUT ── */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .25s;overflow-y:auto}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0;box-shadow:0 0 16px rgba(232,50,74,0.3)}
+.logo-text{font-size:13px;font-weight:700;line-height:1.2}
+.logo-sub{font-size:10px;color:var(--muted)}
+.nav-section{padding:10px 8px 6px}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:1px;color:var(--dim);padding:0 8px 6px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r2);cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;margin-bottom:2px;text-decoration:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(232,50,74,0.12);color:var(--red)}
+.nav-item .ni{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.nav-divider{height:1px;background:var(--border);margin:8px 16px}
+.main{margin-left:240px;flex:1;min-width:0}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.breadcrumb{font-size:13px;color:var(--muted)}
+.breadcrumb b{color:var(--text);font-weight:600}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:6px 12px;min-width:220px}
+.search-box input{background:transparent;border:none;outline:none;font-family:var(--font);font-size:13px;color:var(--text);width:100%}
+.search-box input::placeholder{color:var(--dim)}
+.content{padding:28px;max-width:1100px}
+
+/* ── CARDS ── */
+.page-header{margin-bottom:28px}
+.page-title{font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.page-meta{font-size:13px;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--mono)}
+.badge-red{background:var(--red-bg);color:var(--red);border:1px solid rgba(232,50,74,0.2)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}
+.badge-gray{background:rgba(139,148,158,0.12);color:var(--muted)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.card-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+
+/* ── SECTION TABS ── */
+.section-nav{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap}
+.snav-item{padding:7px 16px;border-radius:var(--r2);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;transition:all .15s;display:flex;align-items:center;gap:6px}
+.snav-item:hover{border-color:var(--red);color:var(--text)}
+.snav-item.active{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+
+/* ── HOME GRID ── */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:32px}
+.home-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.home-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,var(--red));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.home-card:hover{border-color:var(--c,var(--red));background:var(--bg3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.home-card:hover::before{transform:scaleX(1)}
+.hc-icon{font-size:24px;margin-bottom:14px}
+.hc-code{font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:4px}
+.hc-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.hc-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.hc-count{position:absolute;top:14px;right:14px;font-size:11px;font-family:var(--mono);color:var(--c,var(--red));background:rgba(232,50,74,0.1);padding:2px 8px;border-radius:20px}
+
+/* ── ROLE CARDS ── */
+.role-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.role-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s}
+.role-card:hover{border-color:var(--border2);background:var(--bg3)}
+.role-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.role-avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0}
+.role-id{font-size:11px;font-family:var(--mono);color:var(--muted)}
+.role-name{font-size:16px;font-weight:700}
+.role-reports{font-size:12px;color:var(--muted)}
+.duty-list{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.duty-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.4}
+.duty-dot{width:5px;height:5px;border-radius:50%;background:var(--c,var(--red));flex-shrink:0;margin-top:5px}
+.kpi-pills{display:flex;gap:6px;flex-wrap:wrap}
+.kpi-pill{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--bg4);color:var(--muted);border:1px solid var(--border)}
+
+/* ── SOP ── */
+.sop-list{display:flex;flex-direction:column;gap:10px}
+.sop-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.sop-card:hover{border-color:var(--border2)}
+.sop-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none}
+.sop-num{font-family:var(--mono);font-size:11px;color:var(--muted);width:62px;flex-shrink:0}
+.sop-title{font-size:14px;font-weight:600;flex:1}
+.sop-meta{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.sop-chevron{color:var(--muted);font-size:12px;transition:transform .2s;flex-shrink:0}
+.sop-card.open .sop-chevron{transform:rotate(180deg)}
+.sop-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border)}
+.sop-card.open .sop-body{display:block}
+.step-list{display:flex;flex-direction:column;gap:0}
+.step-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.step-item:last-child{border-bottom:none}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--red-bg);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:var(--mono)}
+.step-content{flex:1}
+.step-desc{font-size:13px;color:var(--text);margin-bottom:4px}
+.step-meta{display:flex;gap:12px;flex-wrap:wrap}
+.step-who{font-size:11px;color:var(--blue)}
+.step-time{font-size:11px;color:var(--amber)}
+
+/* ── SITUATION ── */
+.sit-list{display:flex;flex-direction:column;gap:10px}
+.sit-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.sit-card:hover{border-color:var(--border2)}
+.sit-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer}
+.sit-level{font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:20px;flex-shrink:0}
+.sit-title{font-size:14px;font-weight:600;flex:1}
+.sit-group-badge{font-size:11px;padding:2px 8px;border-radius:20px;flex-shrink:0}
+.sit-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border)}
+.sit-card.open .sit-body{display:block}
+.sit-trigger{background:var(--amber-bg);border-left:3px solid var(--amber);border-radius:0 6px 6px 0;padding:10px 14px;margin:14px 0 12px;font-size:12px;color:var(--amber)}
+.sit-trigger-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.sit-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.sit-step{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:6px;background:var(--bg3);font-size:12px;color:var(--text)}
+.sit-step-n{width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)}
+.dont-list{display:flex;flex-direction:column;gap:6px}
+.dont-item{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-radius:6px;background:rgba(248,81,73,0.08);border-left:2px solid var(--red);font-size:12px;color:#f47067}
+.sit-footer{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+/* ── CHECKLIST ── */
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.cl-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px}
+.cl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cl-name{font-size:15px;font-weight:700}
+.cl-items{display:flex;flex-direction:column;gap:6px}
+.cl-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:6px;background:var(--bg3);cursor:pointer;transition:background .15s}
+.cl-item:hover{background:var(--bg4)}
+.cl-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;margin-top:1px;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.cl-item.checked .cl-check{background:var(--green);border-color:var(--green);color:#fff;font-size:10px}
+.cl-text{font-size:12px;color:var(--text);flex:1;line-height:1.5}
+.cl-item.checked .cl-text{color:var(--muted);text-decoration:line-through}
+.cl-tag{font-size:10px;padding:2px 6px;border-radius:10px;background:var(--bg4);color:var(--dim);flex-shrink:0}
+.cl-progress{margin-bottom:14px}
+.cl-progress-bar{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.cl-progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s}
+.cl-progress-text{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
+
+/* ── KNOWLEDGE ── */
+.kb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.kb-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s}
+.kb-card:hover{border-color:var(--border2);background:var(--bg3)}
+.kb-cat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--amber);margin-bottom:8px}
+.kb-title{font-size:15px;font-weight:700;margin-bottom:10px}
+.kb-content{font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-line;margin-bottom:12px}
+.kb-stars{color:var(--amber);font-size:12px;margin-bottom:8px}
+.kb-tags{display:flex;gap:5px;flex-wrap:wrap}
+.kb-tag{font-size:11px;padding:2px 7px;border-radius:20px;background:var(--bg4);color:var(--dim)}
+
+/* ── KPI TABLE ── */
+.kpi-table{width:100%;border-collapse:collapse;font-size:13px}
+.kpi-table th{font-size:10px;font-weight:600;color:var(--dim);text-align:left;padding:0 12px 10px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-table td{padding:11px 12px;border-top:1px solid var(--border)}
+.kpi-table tr:hover td{background:rgba(255,255,255,0.02)}
+.kpi-name{font-weight:600}
+.kpi-target{font-family:var(--mono);color:var(--green)}
+.kpi-warn{font-family:var(--mono);color:var(--amber)}
+
+/* ── SEARCH RESULT ── */
+.search-results{display:flex;flex-direction:column;gap:8px}
+.sr-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;cursor:pointer;transition:all .15s}
+.sr-item:hover{border-color:var(--border2);background:var(--bg3)}
+.sr-type{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.sr-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.sr-preview{font-size:12px;color:var(--muted);line-height:1.5}
+.sr-highlight{background:rgba(232,50,74,0.2);color:var(--red);border-radius:2px;padding:0 2px}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:580px;max-height:88vh;overflow-y:auto;animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.modal-head{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--muted)}
+.close-btn{width:28px;height:28px;border-radius:6px;background:var(--bg4);border:none;cursor:pointer;color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.close-btn:hover{background:var(--red-bg);color:var(--red)}
+.modal-body{padding:20px 24px 24px}
+
+/* ── MISC ── */
+.empty{text-align:center;padding:48px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.sep{height:1px;background:var(--border);margin:16px 0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.grid-2,.grid-3{grid-template-columns:1fr}.role-grid{grid-template-columns:1fr}}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:18px;height:1.5px;background:var(--muted);border-radius:2px}
+@media(max-width:768px){.hamburger{display:flex}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">OCH</div>
+      <div>
+        <div class="logo-text">OEG Cyber Hub</div>
+        <div class="logo-sub">Wiki Vận Hành</div>
+      </div>
+    </div>
+  </div>
+
+  <nav style="padding:12px 8px;flex:1">
+    <!-- Dashboard links -->
+    <div class="nav-section">
+      <div class="nav-label">Dashboard</div>
+      <a href="index.html" class="nav-item"><span class="ni">🏠</span>Trang chủ</a>
+      <a href="OEG_M1_Dashboard.html" class="nav-item"><span class="ni">📊</span>M1 — Tổng quan</a>
+      <a href="OEG_M2_Fnet.html" class="nav-item"><span class="ni">🖥️</span>M2 — Fnet</a>
+      <a href="OEG_M3_FnB_Mart.html" class="nav-item"><span class="ni">🍜</span>M3 — FnB & Mart</a>
+    </div>
+
+    <div class="nav-divider"></div>
+
+    <!-- Wiki sections -->
+    <div class="nav-section">
+      <div class="nav-label">Wiki</div>
+      <div class="nav-item active" onclick="setSection('home')" id="nav-home"><span class="ni">📚</span>Tổng quan Wiki</div>
+      <div class="nav-item" onclick="setSection('role')" id="nav-role"><span class="ni">👤</span>01 — Role & KPI</div>
+      <div class="nav-item" onclick="setSection('sop')" id="nav-sop"><span class="ni">📋</span>02 — SOP</div>
+      <div class="nav-item" onclick="setSection('situation')" id="nav-situation"><span class="ni">⚡</span>03 — Tình huống</div>
+      <div class="nav-item" onclick="setSection('checklist')" id="nav-checklist"><span class="ni">✅</span>04 — Checklist</div>
+      <div class="nav-item" onclick="setSection('kpi')" id="nav-kpi"><span class="ni">📈</span>06 — KPI</div>
+      <div class="nav-item" onclick="setSection('knowledge')" id="nav-knowledge"><span class="ni">💡</span>08 — Knowledge Base</div>
+    </div>
+  </nav>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main-content">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="breadcrumb">Wiki / <b id="bc-label">Tổng quan</b></div>
+    </div>
+    <div class="search-box">
+      <span style="color:var(--dim)">🔍</span>
+      <input type="text" id="searchInput" placeholder="Tìm SOP, tình huống, quy trình..." oninput="handleSearch(this.value)"/>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- HOME -->
+    <div id="sec-home">
+      <div class="page-header">
+        <div class="page-title">📚 Wiki Vận Hành OEG Cyber Hub <span class="badge badge-red">v1.0</span></div>
+        <div class="page-meta">Bộ tài liệu chuẩn hoá vận hành chuỗi OGC/OCH · 6 cơ sở Hà Nội</div>
+      </div>
+      <div class="home-grid">
+        <div class="home-card" style="--c:var(--blue)" onclick="setSection('role')">
+          <div class="hc-count">5 roles</div>
+          <div class="hc-icon">👤</div>
+          <div class="hc-code">MODULE 01</div>
+          <div class="hc-title">Role & Responsibility</div>
+          <div class="hc-desc">Mô tả công việc, KPI và liên kết checklist/SOP cho từng chức danh vận hành.</div>
+        </div>
+        <div class="home-card" style="--c:var(--green)" onclick="setSection('sop')">
+          <div class="hc-count">28 SOPs</div>
+          <div class="hc-icon">📋</div>
+          <div class="hc-code">MODULE 02</div>
+          <div class="hc-title">SOP — Quy trình</div>
+          <div class="hc-desc">Quy trình chi tiết: mở ca, đóng ca, bán hàng, FnB, xử lý sự cố và thu mua.</div>
+        </div>
+        <div class="home-card" style="--c:var(--amber)" onclick="setSection('situation')">
+          <div class="hc-count">18 tình huống</div>
+          <div class="hc-icon">⚡</div>
+          <div class="hc-code">MODULE 03</div>
+          <div class="hc-title">Tình huống xử lý</div>
+          <div class="hc-desc">Tình huống thực tế có trigger, checklist bước xử lý và điều cấm rõ ràng.</div>
+        </div>
+        <div class="home-card" style="--c:var(--purple)" onclick="setSection('checklist')">
+          <div class="hc-count">3 checklist</div>
+          <div class="hc-icon">✅</div>
+          <div class="hc-code">MODULE 04</div>
+          <div class="hc-title">Checklist ca</div>
+          <div class="hc-desc">Checklist mở ca, đóng ca và bàn máy có thể tích theo ca thực tế.</div>
+        </div>
+        <div class="home-card" style="--c:var(--cyan)" onclick="setSection('kpi')">
+          <div class="hc-count">4 KPIs</div>
+          <div class="hc-icon">📈</div>
+          <div class="hc-code">MODULE 06</div>
+          <div class="hc-title">KPI & Dashboard</div>
+          <div class="hc-desc">Chỉ số KPI target, ngưỡng cảnh báo, scope và nguồn dữ liệu.</div>
+        </div>
+        <div class="home-card" style="--c:var(--pink)" onclick="setSection('knowledge')">
+          <div class="hc-count">2 bài</div>
+          <div class="hc-icon">💡</div>
+          <div class="hc-code">MODULE 08</div>
+          <div class="hc-title">Knowledge Base</div>
+          <div class="hc-desc">Tips bán hàng, combo bán chạy và best practice từ kinh nghiệm thực tế.</div>
+        </div>
+      </div>
+      <!-- Quick access -->
+      <div style="margin-bottom:8px;font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px">Truy cập nhanh</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="snav-item" onclick="setSection('sop');setTimeout(()=>openSOP('SOP-001'),100)">📋 SOP Mở ca</div>
+        <div class="snav-item" onclick="setSection('sop');setTimeout(()=>openSOP('SOP-002'),100)">📋 SOP Đóng ca</div>
+        <div class="snav-item" onclick="setSection('checklist')">✅ Checklist ca</div>
+        <div class="snav-item" onclick="setSection('situation')">⚡ Xử lý sự cố</div>
+        <div class="snav-item" onclick="setSection('knowledge')">💡 Tips bán hàng</div>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div id="sec-search" style="display:none">
+      <div class="page-header">
+        <div class="page-title">🔍 Kết quả tìm kiếm</div>
+        <div class="page-meta" id="searchMeta"></div>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <!-- ROLE -->
+    <div id="sec-role" style="display:none">
+      <div class="page-header">
+        <div class="page-title">👤 Role & Responsibility</div>
+        <div class="page-meta">Mô tả công việc và KPI cho 5 chức danh vận hành</div>
+      </div>
+      <div class="role-grid" id="roleGrid"></div>
+    </div>
+
+    <!-- SOP -->
+    <div id="sec-sop" style="display:none">
+      <div class="page-header">
+        <div class="page-title">📋 SOP — Quy trình vận hành</div>
+        <div class="page-meta">28 quy trình chuẩn hoá · Click để xem chi tiết từng bước</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="sopFilterRow"></div>
+      <div class="sop-list" id="sopList"></div>
+    </div>
+
+    <!-- SITUATION -->
+    <div id="sec-situation" style="display:none">
+      <div class="page-header">
+        <div class="page-title">⚡ Tình huống xử lý cốt lõi</div>
+        <div class="page-meta">18 tình huống thực tế · Có trigger, bước xử lý và điều cấm</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="sitFilterRow"></div>
+      <div class="sit-list" id="sitList"></div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div id="sec-checklist" style="display:none">
+      <div class="page-header">
+        <div class="page-title">✅ Checklist ca làm việc</div>
+        <div class="page-meta">Tích trực tiếp trên trang — progress tự động cập nhật</div>
+      </div>
+      <div class="cl-grid" id="clGrid"></div>
+    </div>
+
+    <!-- KPI -->
+    <div id="sec-kpi" style="display:none">
+      <div class="page-header">
+        <div class="page-title">📈 KPI & Chỉ số vận hành</div>
+        <div class="page-meta">Target và ngưỡng cảnh báo theo ca / ngày</div>
+      </div>
+      <div class="card">
+        <table class="kpi-table">
+          <thead><tr><th>KPI</th><th>Đơn vị</th><th>Target</th><th>Cảnh báo</th><th>Scope</th><th>Owner</th><th>Nguồn</th></tr></thead>
+          <tbody id="kpiTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KNOWLEDGE -->
+    <div id="sec-knowledge" style="display:none">
+      <div class="page-header">
+        <div class="page-title">💡 Knowledge Base</div>
+        <div class="page-meta">Tips & best practice từ kinh nghiệm thực tế</div>
+      </div>
+      <div class="kb-grid" id="kbGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-title" id="modalTitle"></div><div class="modal-sub" id="modalSub"></div></div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════
+const ROLES=[
+  {id:'TC',name:'Trưởng ca',reports_to:'Giám đốc chuỗi',color:'#e8324a',duties:['Quản lý ca vận hành toàn diện','Phân công nhân sự ca làm việc','Kiểm tra tiêu chuẩn phòng máy đầu ca','Xử lý sự cố phát sinh trong ca','Báo cáo doanh thu cuối ca'],kpis:[{name:'Doanh thu ca',target:'5.000.000 VNĐ'},{name:'Điểm hài lòng khách',target:'≥ 90%'}],checklists:'CL-MOca · CL-DOca · CL-MAY',sops:'SOP-001 · SOP-002 · SOP-003'},
+  {id:'TN',name:'Thu ngân',reports_to:'Trưởng ca',color:'#388bfd',duties:['Tiếp nhận và xử lý giao dịch thanh toán','Quản lý quỹ tiền mặt ca','Kiểm kê quỹ đầu và cuối ca','Hỗ trợ khách đăng ký dịch vụ'],kpis:[{name:'Sai lệch quỹ',target:'0 VNĐ'},{name:'Tốc độ thanh toán',target:'≤ 3 phút'}],checklists:'CL-MOca · CL-DOca',sops:'SOP-004 · SOP-005'},
+  {id:'FNB',name:'Bếp / FnB',reports_to:'Trưởng ca',color:'#3fb950',duties:['Order và bảo quản nguyên liệu','Sơ chế nguyên liệu','Chế biến món ăn / đồ uống','Vệ sinh và báo cáo cuối ca'],kpis:[{name:'Sai đơn hàng',target:'0 lượt'},{name:'Thời gian ra món',target:'≤ 20 phút'}],checklists:'CL-MOca · CL-DOca',sops:'SOP-005 · SOP-006'},
+  {id:'DV',name:'Dịch vụ',reports_to:'Trưởng ca',color:'#d29922',duties:['Giao tiếp và hỗ trợ khách hàng','Thu tiền và phục vụ đơn hàng','Dọn dẹp, setup khu vực máy','Báo ca và bàn giao cuối ca'],kpis:[{name:'Giao sai đơn hàng',target:'0 lượt'},{name:'Thời gian phục vụ Mart',target:'≤ 10 phút'}],checklists:'CL-MAY · CL-DOca',sops:'SOP-001 · SOP-003 · SOP-010'},
+  {id:'KT',name:'Kỹ thuật vận hành',reports_to:'Kiểm soát chất lượng',color:'#bc8cff',duties:['Kiểm tra và bảo trì thiết bị','Sửa chữa và xử lý sự cố kỹ thuật','Lắp đặt và thay thế thiết bị','Quản lý tài sản và công cụ kỹ thuật','Báo cáo và phối hợp vận hành'],kpis:[],checklists:'',sops:''},
+];
+
+const SOPS=[
+  {id:'SOP-001',name:'Quy trình mở ca',cat:'Mở ca',apply:'TC · TN · DV · FNB',steps:[{d:'Kiểm tra bàn giao ca trước: doanh thu, hệ thống máy, hàng hóa và thiết bị',w:'TC',t:'10 phút'},{d:'Bật hệ thống máy theo khu vực, kiểm tra hoạt động',w:'DV',t:'15 phút'},{d:'Kiểm tra vệ sinh phòng máy theo checklist CL-MAY',w:'DV',t:'20 phút'},{d:'Cập nhật ca làm việc lên hệ thống',w:'TN',t:'5 phút'},{d:'Báo cáo tình trạng đầu ca cho Trưởng ca',w:'Tất cả',t:'5 phút'}]},
+  {id:'SOP-002',name:'Quy trình đóng ca',cat:'Đóng ca',apply:'TC · TN · DV · FNB',steps:[{d:'Hoàn tất các đơn hàng đang treo',w:'TN · DV · FNB',t:'15 phút'},{d:'Chốt tiền mặt doanh thu ca',w:'TN',t:'5 phút'},{d:'Báo cáo theo form mẫu',w:'Tất cả',t:'5 phút'}]},
+  {id:'SOP-003',name:'Quy trình giao ca',cat:'Giao ca',apply:'TC · TN · DV · FNB',steps:[{d:'Chuẩn bị bàn giao: rà soát khu vực, điền checklist',w:'Tất cả',t:'15 phút'},{d:'Kiểm tra và nhận bàn giao',w:'Tất cả',t:'10 phút'},{d:'Cập nhật và báo cáo',w:'Tất cả',t:'15 phút'}]},
+  {id:'SOP-004',name:'Quy trình bán hàng',cat:'Bán hàng',apply:'TC · TN',steps:[{d:'Tiếp nhận: chào khách và nhận sản phẩm cần thanh toán',w:'TC · TN',t:'2 phút'},{d:'Xử lý đơn hàng: quét mã, thông báo tổng hóa đơn',w:'TC · TN',t:'2–5 phút'},{d:'Thanh toán: thực hiện, kiểm tra giao dịch, hoàn tiền thừa',w:'TC · TN',t:'2 phút'},{d:'Hoàn tất: đóng gói, cảm ơn khách',w:'TC · TN',t:'2 phút'},{d:'Xử lý phát sinh: sai giá, đổi trả, khiếu nại → Báo TC',w:'TC · TN',t:'2–5 phút'}]},
+  {id:'SOP-005',name:'Quy trình order và phục vụ FnB',cat:'FnB',apply:'TC · TN · FNB · DV',steps:[{d:'Nhận order tại quầy hoặc trên phần mềm FFOOD',w:'TN',t:'2 phút'},{d:'Kiểm tra đơn hàng',w:'FNB',t:'1 phút'},{d:'Chuẩn bị đơn hàng theo yêu cầu',w:'FNB',t:'3–20 phút'},{d:'Giao đồ cho khách hàng',w:'DV',t:'3 phút'}]},
+  {id:'SOP-006',name:'Quy trình đặt hàng FnB',cat:'Thu mua',apply:'TM · CHT · TC',steps:[{d:'Điền thông tin vào link đặt hàng FNB nguyên liệu',w:'CHT',t:'Trước 15h'},{d:'Tổng hợp và kiểm tra thông tin',w:'TM',t:'Trước 16h'},{d:'Duyệt đơn hàng',w:'TM',t:'Trước 16h30'},{d:'Gửi đơn đặt hàng NCC và xử lý phát sinh',w:'TM',t:'Trước 17h'},{d:'Hoàn thiện hồ sơ, bàn giao cho vận hành',w:'TM',t:'Trước 17h30'}]},
+  {id:'SOP-007',name:'Quy trình nhận hàng Mart và FnB',cat:'Thu mua',apply:'CHT · TC · TM',steps:[{d:'Tiếp nhận thông tin: đơn đặt hàng và ngày về hàng',w:'CHT',t:'1 ngày trước'},{d:'Nhận hàng: đối chiếu đơn, kiểm đếm số lượng và chất lượng',w:'TC',t:'Tại thời điểm nhận'},{d:'Cập nhật thông tin sau nhận hàng',w:'TC',t:'9h ngày hôm sau'},{d:'Hoàn thiện hồ sơ, bàn giao cho bộ phận thu mua',w:'CHT',t:'Thứ 6 hàng tuần'}]},
+  {id:'SOP-008',name:'Quy trình chốt sổ doanh thu ngày',cat:'Tài chính',apply:'CHT · TN · TC',steps:[{d:'Chốt ca: đóng Fnet và FFood, kiểm đếm và đối chiếu chênh lệch',w:'TN',t:'23h59'},{d:'Kiểm tra và xác nhận tiền mặt, đối chiếu và xử lý chênh lệch',w:'TC',t:'30 phút sau chốt ca'},{d:'Xuất báo cáo ngày và điền bóc tách doanh thu',w:'TC',t:'Trước 7h sáng'},{d:'Đối soát và lưu trữ số liệu',w:'CHT',t:'15h chiều'}]},
+  {id:'SOP-009',name:'Quy trình xử lý khiếu nại khách hàng',cat:'Xử lý sự cố',apply:'CHT · TC · DV',steps:[{d:'Tiếp nhận khiếu nại & phản hồi ban đầu',w:'CSKH',t:'Ngay khi có'},{d:'Xác minh thông tin',w:'CSKH',t:'<10 phút'},{d:'Xác định thẩm quyền và điều hướng xử lý',w:'CSKH',t:'<5 phút'},{d:'Xử lý & theo dõi tiến độ',w:'CSKH · CHT · TC',t:'<24h hoặc <72h'},{d:'Khảo sát mức độ hài lòng sau xử lý',w:'CSKH · CHT · TC',t:'Ngay sau giải quyết'},{d:'Báo cáo & lưu hồ sơ',w:'CSKH',t:'Ngay sau giải quyết'}]},
+  {id:'SOP-010',name:'Quy trình đón tiếp và checkin khách',cat:'CSKH',apply:'CHT · TC · TN · SV',steps:[{d:'Chào khách khi vào cửa hàng',w:'Tất cả',t:'<15 giây'},{d:'Xác định nhu cầu khách hàng và đề nghị hỗ trợ',w:'TN',t:'<30 giây'},{d:'Thực hiện hỗ trợ theo nhu cầu',w:'TN · SV',t:'<5 phút'},{d:'Xác nhận hoàn tất và hỏi thêm nhu cầu',w:'TN · SV',t:'Ngay sau hỗ trợ'},{d:'Cảm ơn khách hàng',w:'TN · SV',t:'Ngay sau xác nhận'}]},
+  {id:'SOP-011',name:'Quy trình kiểm soát tài sản',cat:'Kiểm soát',apply:'CHT · TC',steps:[{d:'Tiếp nhận bàn giao tài sản',w:'CHT',t:'Khi nhận'},{d:'Gắn mã, niêm phong và định vị tài sản',w:'CHT',t:'<30 phút sau nhận'},{d:'Kiểm soát tài sản theo ngày bằng checklist',w:'CHT · TC',t:'02h–05h sáng'},{d:'Theo dõi sử dụng và cập nhật thay đổi',w:'CHT · TC',t:'Daily khi có phát sinh'},{d:'Tổng hợp báo cáo xử lý',w:'CHT · TC',t:'Hàng tuần'}]},
+  {id:'SOP-012',name:'Quy trình kiểm kê tài sản',cat:'Kiểm soát',apply:'KT · QLVH · CHT · KSCL',steps:[{d:'Thông báo kiểm kê tài sản theo quý',w:'KT',t:'Trước 5 ngày'},{d:'Tiến hành kiểm kê',w:'KT · QLVH · CHT · KSCL',t:'3 tiếng'},{d:'Lập biên bản kiểm kê',w:'KT',t:'Ngay sau kiểm kê'},{d:'Đối chiếu số liệu kế toán và xử lý chênh lệch',w:'KT · QLVH',t:'<3 ngày'},{d:'Hạch toán chênh lệch',w:'KT',t:'<2 ngày sau báo cáo'},{d:'Lưu hồ sơ và báo cáo',w:'KSCL · KT',t:'Sau khi hoàn tất'}]},
+  {id:'SOP-013',name:'Quy trình xử lý chênh lệch tài sản',cat:'Kiểm soát',apply:'KT · QLVH · CHT · KSCL',steps:[{d:'Phát hiện chênh lệch & ghi nhận',w:'KT · QLVH · CHT · KSCL',t:'Ngay khi phát hiện'},{d:'Xác minh nhanh tài sản có thực sự chênh lệch',w:'QLVH · CHT · KSCL',t:'Ngay sau phát hiện'},{d:'Lập biên bản ghi nhận chênh lệch',w:'KSCL · QLVH',t:'Sau khi xác minh'},{d:'Điều tra và xác định nguyên nhân',w:'QLVH · CHT · KSCL',t:'<1–7 ngày tùy mức'},{d:'Xử lý trách nhiệm',w:'QLVH',t:'<2 ngày sau kết luận'},{d:'Cập nhật số liệu và biện pháp khắc phục',w:'QLVH',t:'<24h sau xử lý'},{d:'Báo cáo & lưu hồ sơ',w:'KSCL',t:'1 ngày sau hoàn tất'}]},
+  {id:'SOP-014',name:'Quy trình kiểm soát tuân thủ (KSCL)',cat:'Kiểm soát',apply:'KSCL · CHT · TC',steps:[{d:'Kiểm tra cơ sở và đối chiếu checklist',w:'KSCL',t:'Theo lịch KSCL'},{d:'Ghi nhận sai phạm vào biên bản',w:'KSCL',t:'Trong khi kiểm tra'},{d:'Lập biên bản',w:'KSCL',t:'Khi hoàn tất kiểm tra'},{d:'Kiểm tra nội dung và đề xuất chỉnh sửa',w:'CHT · KSCL · TC',t:'<30 phút sau nhận biên bản'},{d:'Ký xác nhận biên bản',w:'CHT · TC',t:'<5 phút sau thống nhất'},{d:'Khắc phục vi phạm và gửi khắc phục đúng hạn',w:'CHT · TC',t:'Theo SLA'},{d:'Xác nhận đã khắc phục và lưu hồ sơ',w:'KSCL',t:'Sau khi đến hạn'}]},
+  {id:'SOP-015',name:'Quy trình chăm sóc khách hàng',cat:'CSKH',apply:'CSKH',steps:[{d:'Tiếp nhận yêu cầu & phản hồi ban đầu',w:'CSKH',t:'Ngay khi nhận'},{d:'Phân loại và xử lý yêu cầu',w:'CSKH',t:'<3 phút'},{d:'Hỗ trợ yêu cầu, giải đáp thắc mắc, tư vấn dịch vụ',w:'CSKH',t:'<15 phút'},{d:'Xác nhận hoàn tất và hỏi thêm nhu cầu',w:'CSKH',t:'Ngay sau hỗ trợ'},{d:'Khảo sát mức độ hài lòng',w:'CSKH',t:'Ngay sau hoàn tất'},{d:'Cảm ơn khách hàng',w:'CSKH',t:'Ngay sau khảo sát'}]},
+  {id:'SOP-016',name:'Quy trình vận hành ca',cat:'Vận hành',apply:'TC',steps:[]},
+  {id:'SOP-017',name:'Quy trình phân ca và quản lý ca làm việc',cat:'Vận hành',apply:'CHT',steps:[]},
+  {id:'SOP-018',name:'Hướng dẫn xử lý sự cố Fnet',cat:'Xử lý sự cố',apply:'TC',steps:[]},
+  {id:'SOP-019',name:'Quy trình Onboarding nhân viên mới',cat:'Nhân sự',apply:'CHT',steps:[]},
+  {id:'SOP-020',name:'Kiểm kê & quản lý FnB cuối ngày',cat:'Kiểm soát',apply:'TC',steps:[]},
+  {id:'SOP-021',name:'Quy trình phục vụ khách hàng',cat:'CSKH',apply:'TN · SV · FnB',steps:[]},
+  {id:'SOP-022',name:'Quy trình vận hành mart',cat:'Vận hành',apply:'TN · SV',steps:[]},
+  {id:'SOP-023',name:'Quy trình vệ sinh khu vực máy',cat:'Vệ sinh',apply:'SV',steps:[]},
+  {id:'SOP-024',name:'An toàn PCCC & Sơ cứu',cat:'An toàn',apply:'CHT · TC',steps:[]},
+  {id:'SOP-025',name:'Quy trình sử dụng phần mềm Fnet',cat:'Đào tạo',apply:'CHT · TC · TN',steps:[]},
+  {id:'SOP-026',name:'Quy trình sử dụng phần mềm Ffood',cat:'Đào tạo',apply:'CHT · TC · TN',steps:[]},
+  {id:'SOP-027',name:'Quy trình sử dụng phần mềm Base',cat:'Đào tạo',apply:'CHT · TC · NV',steps:[]},
+  {id:'SOP-028',name:'Quy trình sử dụng phần mềm Misa',cat:'Đào tạo',apply:'CHT · TC · TN',steps:[]},
+];
+
+const SITUATIONS=[
+  {id:'SIT-001',title:'Khách phàn nàn máy lag / chậm',group:'Sự cố kỹ thuật',location:'Phòng máy',level:'NV→TC',trigger:'Khách phản ánh lag, màn hình đơ, game bị delay >3 giây',steps:['Xin lỗi khách, ghi nhận vị trí máy và thời điểm','Kiểm tra task manager, ping, nhiệt độ máy','Restart game / ứng dụng nếu chỉ lag phần mềm','Đổi máy cho khách nếu lỗi phần cứng','Báo cáo Trưởng ca và ghi log sự cố'],donts:['Không cãi lại hoặc phủ nhận phản ánh của khách','Không tự ý format máy khi chưa xác nhận nguyên nhân'],kpi:'Điểm hài lòng khách, Uptime máy',escalate:'Trưởng ca'},
+  {id:'SIT-002',title:'Khách không đồng ý tiền thanh toán',group:'Khách hàng',location:'Quầy thu ngân',level:'NV→TC',trigger:'Khách cho rằng bị tính sai giờ hoặc dịch vụ',steps:['Giữ bình tĩnh, mời khách ngồi xem lại hóa đơn','Đối chiếu log giờ trên hệ thống với thực tế','Nếu có sai sót: xin lỗi và điều chỉnh ngay','Nếu đúng: giải thích từng khoản rõ ràng','Báo cáo Trưởng ca nếu khách vẫn không đồng ý'],donts:['Không to tiếng hoặc tranh cãi trước mặt khách khác','Không tự ý giảm tiền khi chưa có phê duyệt Trưởng ca'],kpi:'Điểm hài lòng khách, Doanh thu ca',escalate:'Trưởng ca'},
+  {id:'SIT-003',title:'Khách gây ồn ảnh hưởng xung quanh',group:'Khách hàng',location:'Toàn cửa hàng',level:'NV→TC',trigger:'Khách nói to gây ảnh hưởng khách khác',steps:['Nhắc nhở nhẹ nhàng lần 1','Nhắc rõ lại quy định lần 2','Báo Trưởng Ca nếu không hợp tác','Trưởng Ca mời khách ra ngoài nếu cần','Báo cáo Cửa Hàng Trưởng ghi nhận sự việc'],donts:['Không quát khách','Không xử lý thiếu nhất quán'],kpi:'Trải nghiệm khách hàng chung',escalate:'Trưởng ca'},
+  {id:'SIT-004',title:'Mất điện bất chợt / sự cố điện',group:'Sự cố kỹ thuật',location:'Toàn cửa hàng',level:'NV→TC',trigger:'Mất điện đột ngột',steps:['Trấn an khách','Báo cáo bộ phận liên quan hỗ trợ','Thông báo nguyên nhân và thời gian dự kiến có điện lại','Hỗ trợ khách: refund / xử lý linh hoạt','Báo cáo Cửa Hàng Trưởng ghi nhận sự việc'],donts:['Không để khách hàng hoang mang','Không im lặng','Không xử lý chậm'],kpi:'Trải nghiệm khách hàng, Downtime',escalate:'Trưởng Ca'},
+  {id:'SIT-005',title:'Thiếu nhân sự / nghỉ đột xuất',group:'Nhân sự',location:'Toàn cửa hàng',level:'TC',trigger:'Thiếu người vận hành ca',steps:['Điều phối lại vị trí làm việc của toàn nhân sự trong ca','Ưu tiên vị trí quan trọng (thu ngân → phòng máy)','Nhờ hỗ trợ từ nhân sự các ca khác','Nhờ hỗ trợ từ nhân sự cơ sở khác'],donts:[],kpi:'',escalate:'CHT'},
+  {id:'SIT-006',title:'Mất tài sản cá nhân của khách',group:'An ninh',location:'Toàn cửa hàng',level:'TC',trigger:'Khi khách báo',steps:['Tiếp nhận thông tin','Xác minh thông tin (check cam, kiểm tra giấy tờ xe...)','Thông báo sơ lược sự cố trong nhóm vận hành','Lập biên bản với bảo vệ chịu trách nhiệm','Lên phường trình báo cùng khách hàng','Lập biên bản sự việc 3 bên','Lấy thông tin khách và hẹn thời gian xử lý','Phối hợp pháp chế làm việc với công ty bảo vệ','Đàm phán phương án đền bù','Thực hiện thủ tục đền bù và bàn giao'],donts:[],kpi:'',escalate:'CHT'},
+  {id:'SIT-007',title:'Khách hút pod trong khu vực quán',group:'Khách hàng',location:'Toàn cửa hàng',level:'NV→TC',trigger:'Khói, mùi lạ, khách khác báo',steps:['Nhân viên nhắc nhở trực tiếp lần 1','Giám sát và tăng cường chú ý','Báo Trưởng ca nhắc nhở và răn đe','Nếu vẫn vi phạm: xin phép không phục vụ'],donts:[],kpi:'',escalate:'Trưởng ca'},
+  {id:'SIT-008',title:'Khách có hành vi quá khích / đánh nhau',group:'An ninh',location:'Toàn cửa hàng',level:'TC',trigger:'Nhân viên trực khu báo cáo hoặc tự phát hiện',steps:['Can thiệp ngay → dừng xung đột, gọi hỗ trợ, tách 2 bên','Ổn định & đánh giá → kiểm tra thương tích, gọi công an/115 nếu cần','Ngừng phục vụ nếu tình hình quá căng thẳng','Ghi nhận sự vụ → lưu camera, lập biên bản','Xử lý & hậu quả → blacklist, bồi thường, trấn an khách'],donts:[],kpi:'',escalate:'CHT'},
+  {id:'SIT-009',title:'Sự cố F&B',group:'Khách hàng',location:'Toàn cửa hàng',level:'NV→TC',trigger:'Chậm đơn, miss đơn, sai đơn, đồ không đạt chuẩn',steps:['Xin lỗi khách, ghi nhận sự cố, xoa dịu khách','Check nhanh lại sự chính xác của sự cố','Nếu khách báo sai → Xoa dịu và giải thích','Nếu sự vụ chính xác → Đổi món hoặc bù sản phẩm mới','Check nguyên nhân, nhắc nhở nhân viên và cải thiện'],donts:[],kpi:'Điểm hài lòng khách',escalate:'TC · CHT'},
+  {id:'SIT-010',title:'Lỗi chuyển khoản',group:'Khách hàng',location:'Toàn cửa hàng',level:'NV→TC',trigger:'Tiền không về tài khoản cửa hàng',steps:['Giữ chân khách và xác nhận lại giao dịch','Kiểm tra lại hệ thống cửa hàng','Nếu đã nhận tiền → xác nhận, tạo đơn hàng cho khách','Nếu chưa nhận tiền → thông báo và tạo đơn mới','Nếu khách cần rời → lưu thông tin để xử lý sau','Thông báo về quy trình hoàn tiền nếu cần'],donts:['Không xử lý nếu không có hình ảnh/lịch sử giao dịch'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca'},
+  {id:'SIT-011',title:'Công an kiểm tra đột xuất',group:'An ninh',location:'Toàn cửa hàng',level:'TC',trigger:'Công an đến trực tiếp yêu cầu kiểm tra',steps:['Chào hỏi tự nhiên, hỏi tên và tổ công tác, hỏi lý do','Gọi điện cho cửa hàng trưởng báo cáo ngay','Chuyển cho Cửa hàng trưởng nói chuyện trực tiếp','Nhận thông tin từ Cửa hàng trưởng để xử lý tiếp'],donts:[],kpi:'',escalate:'CHT'},
+  {id:'SIT-012',title:'Khách hàng làm hỏng thiết bị',group:'Khách hàng',location:'Phòng máy',level:'NV→TC',trigger:'Nhân viên trực khu báo cáo hoặc tự phát hiện',steps:['Ghi nhận sự việc và trạng thái thiết bị ngay lúc phát hiện','Báo cáo Trưởng ca nếu là nhân viên phát hiện','Hỗ trợ khách chuyển máy hoặc đồng kiểm tra','Phân loại trạng thái hỏng / lỗi thiết bị','Báo bộ phận Kỹ thuật kiểm tra ASAP','Thông báo với khách và lập biên bản ghi nhận'],donts:['Không mất bình tĩnh khi xử lý với khách','Không tự ý đòi đền bù từ khách hàng'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca · CHT'},
+  {id:'SIT-013',title:'Khách không mang CCCD khi tạo tài khoản',group:'Khách hàng',location:'Quầy thu ngân',level:'NV',trigger:'Khách đứng trực tiếp tại quầy',steps:['Tiếp nhận thông tin','Thông báo quy định sử dụng dịch vụ','Đề xuất phương án thay thế: bằng lái, hộ chiếu, app VNeID','Hỗ trợ tạo tài khoản hoặc xin lỗi nếu không đáp ứng','Cảm ơn và hẹn khách quay lại mang theo giấy tờ'],donts:['Không cư xử thô lỗ với khách','Không tự ý tạo tài khoản sai quy định'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca'},
+  {id:'SIT-014',title:'Khách chưa đủ tuổi',group:'Khách hàng',location:'Quầy thu ngân',level:'NV',trigger:'Khách đứng trực tiếp tại quầy',steps:['Tiếp nhận thông tin','Thông báo quy định sử dụng dịch vụ','Đề xuất: có người giám hộ đi cùng để hỗ trợ','Hỗ trợ hoặc xin lỗi nếu không đáp ứng quy định','Cảm ơn và chào khách'],donts:['Không cư xử thô lỗ với khách','Không tự ý tạo tài khoản sai quy định'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca'},
+  {id:'SIT-015',title:'Khách mang đồ ăn từ bên ngoài vào',group:'Khách hàng',location:'Toàn cửa hàng',level:'NV→TC',trigger:'Nhân viên trực khu báo cáo hoặc tự phát hiện',steps:['Tiếp nhận thông tin','Thông báo quy định cửa hàng','Đề xuất: ra ngoài dùng hoặc cất vào xe','Xin lỗi nếu khách không đồng ý quy định','Cảm ơn và chào khách'],donts:['Không cư xử thô lỗ với khách','Không làm trái quy định'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca'},
+  {id:'SIT-016',title:'Khách quên mật khẩu tài khoản Net',group:'Khách hàng',location:'Toàn cửa hàng',level:'NV',trigger:'Khách đứng tại quầy hoặc ngồi tại máy báo',steps:['Tiếp nhận thông tin','Điều hướng khách về quầy thu ngân để xác minh','Mượn CCCD hoặc ghi nhận số CCCD do khách đọc','Đối chiếu thông tin và đổi mật khẩu về mặc định (SĐT)','Cảm ơn và chào khách'],donts:['Không hỗ trợ cấp lại mật khẩu khi thông tin không khớp'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca'},
+  {id:'SIT-017',title:'Khách feedback về đơn hàng',group:'Khách hàng',location:'Toàn cửa hàng',level:'NV',trigger:'Khách feedback qua chat tại máy hoặc báo trực tiếp',steps:['Tiếp nhận và phản hồi: xin lỗi và kiểm tra đơn ngay','Kiểm tra tình trạng: sai đơn / thiếu món / chậm','Đối chiếu với nhân viên dịch vụ và FnB','Điều phối phục vụ hoàn thành đơn và xin lỗi lần 2','Báo cáo feedback với TC / CHT','Xin phương án đền bù nếu khách không hài lòng'],donts:['Không tự ý xử lý vượt thẩm quyền','Không cư xử thô lỗ với khách'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca · CHT'},
+  {id:'SIT-018',title:'Khách làm mất vé xe',group:'Khách hàng',location:'Toàn cửa hàng',level:'TC',trigger:'Khách báo cáo mất vé xe',steps:['Tiếp nhận thông tin và điều hướng khách xuống quầy','Xác minh: check số thẻ trên xe và đối chiếu quầy','Nếu tìm thấy thẻ → trả lại khách','Nếu không tìm thấy → kiểm tra giấy tờ xe khách','Lập biên bản và thu phí làm mất thẻ: 100.000đ','Nếu không có giấy tờ xe → lập biên bản kèm ảnh CCCD và ảnh xe','Báo bảo vệ cho khách lấy xe và nhắc nhở khách'],donts:['Không trả xe khi chưa xác minh giấy tờ xe và thông tin khách'],kpi:'Điểm hài lòng khách',escalate:'Trưởng ca · CHT'},
+];
+
+const CHECKLISTS=[
+  {id:'CL-MOca',name:'Checklist mở ca',role:'TC · DV · TN · FNB',freq:'Mỗi ca',items:[
+    {d:'Kiểm tra vệ sinh sàn nhà phòng máy',cat:'Vệ sinh',type:'Pass/Fail'},
+    {d:'Kiểm tra ánh sáng đủ theo quy định khung giờ',cat:'Ánh sáng',type:'Pass/Fail'},
+    {d:'Kiểm tra nhiệt độ điều hòa (22–24°C đông · 24–26°C vắng)',cat:'Nhiệt độ',type:'Pass/Fail'},
+    {d:'Kiểm tra nguyên liệu FnB — đủ, tươi mới, không hết date',cat:'Setup',type:'Số lượng'},
+    {d:'Kiểm tra thiết bị bếp hoạt động ổn định',cat:'Setup',type:'Pass/Fail'},
+    {d:'Nhận bàn giao và kiểm két tiền mặt',cat:'Tài chính',type:'Số lượng'},
+    {d:'Vệ sinh quầy kệ trưng bày — hàng đúng tem giá',cat:'Setup',type:'Pass/Fail'},
+    {d:'Kiểm tra đồ FnB khu vực quầy thu ngân (đủ, không hết date)',cat:'Setup',type:'Số lượng'},
+  ]},
+  {id:'CL-MAY',name:'Checklist bàn máy',role:'DV',freq:'Mỗi ca',items:[
+    {d:'Màn hình sạch — không vân tay, không vệt nước',cat:'Vệ sinh',type:'Pass/Fail'},
+    {d:'Bàn phím sạch bụi — khe phím không cặn thức ăn',cat:'Vệ sinh',type:'Pass/Fail'},
+    {d:'Tai nghe đệm tai sạch, không mùi (lau khăn ẩm rồi khăn khô)',cat:'Vệ sinh',type:'Pass/Fail'},
+    {d:'Setup bàn máy đúng chuẩn: màn hình chính diện ghế, cách mép bàn 15cm',cat:'Setup',type:'Pass/Fail'},
+  ]},
+  {id:'CL-DOca',name:'Checklist đóng ca',role:'TC · DV · FNB · TN',freq:'Mỗi ca',items:[
+    {d:'Kiểm tra tổng quát khu vực phụ trách',cat:'Tổng quát',type:'Pass/Fail'},
+    {d:'Kiểm tra checklist bàn máy — khu vực sạch sẽ',cat:'Setup',type:'Pass/Fail'},
+    {d:'Kiểm tra đơn hàng tồn đọng chưa hoàn thành',cat:'Vận hành',type:'Có/Không'},
+    {d:'Kiểm tra hàng hóa Mart và fill hàng nếu thiếu',cat:'Setup',type:'Pass/Fail'},
+    {d:'Báo cáo và bàn giao ca — đầy đủ: máy lỗi, gear lỗi, máy đặt',cat:'Báo cáo',type:'Có/Không'},
+    {d:'Đóng bếp, sơ chế đồ chuẩn bị bàn giao ca sau',cat:'Setup',type:'Pass/Fail'},
+    {d:'Dọn dẹp vệ sinh khu vực quầy bếp và pha chế',cat:'Vệ sinh',type:'Pass/Fail'},
+    {d:'Kiểm tra số lượng feedback CLDV xin được trong ca',cat:'Báo cáo',type:'Số lượng'},
+  ]},
+];
+
+const KPIS=[
+  {id:'KPI-001',name:'Doanh thu ca',unit:'VNĐ',target:'5.000.000',warn:'4.000.000',scope:'Ca',owner:'Trưởng ca',source:'POS system',desc:'Tổng doanh thu = Bán hàng + FnB − Hoàn trả'},
+  {id:'KPI-002',name:'Điểm hài lòng khách',unit:'Điểm',target:'90',warn:'80',scope:'Ngày',owner:'Tất cả',source:'Manual — nhập tay',desc:'Điểm trung bình từ feedback khách'},
+  {id:'KPI-003',name:'Tỷ lệ máy hoạt động',unit:'%',target:'95',warn:'85',scope:'Ca',owner:'Trưởng ca',source:'Manual — nhập tay',desc:'(Số máy hoạt động / Tổng máy) × 100'},
+  {id:'KPI-004',name:'Thời gian xử lý sự cố',unit:'Phút',target:'15',warn:'30',scope:'Ca',owner:'Trưởng ca',source:'Manual — nhập tay',desc:'Tính từ lúc phát sinh đến khi giải quyết'},
+];
+
+const KB=[
+  {id:'KB-001',title:'Top 3 combo bán chạy cuối tuần',cat:'Combo bán chạy',content:'1. Gói 3h + nước + snack: 65k — 78% khách chọn khi được gợi ý\n2. Gói couple 2h: 90k — tỷ lệ chuyển đổi cao nhất\n3. Gói đêm 8h: 120k — dành cho nhóm gaming',tags:['combo','cuối tuần','upsell','bán hàng'],rating:5},
+  {id:'KB-002',title:'Cách gợi ý nâng cấp gói dịch vụ',cat:'Tips bán hàng',content:"Thời điểm vàng: khi khách còn 30 phút.\nCâu nói: 'Anh/chị còn 30 phút, nâng lên gói 3h thêm X đồng là được cả buổi chiều'.\nTỷ lệ đồng ý ~60%.",tags:['upsell','gợi ý','bán hàng','kỹ năng'],rating:4},
+];
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let currentSection='home';
+let sopFilter='all';
+let sitFilter='all';
+// Checklist checked state
+const checked={};
+
+// ════════════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════════════
+const SECTIONS=['home','search','role','sop','situation','checklist','kpi','knowledge'];
+const BC={'home':'Tổng quan','role':'Role & Responsibility','sop':'SOP — Quy trình','situation':'Tình huống xử lý','checklist':'Checklist ca','kpi':'KPI & Chỉ số','knowledge':'Knowledge Base','search':'Tìm kiếm'};
+
+function setSection(s){
+  currentSection=s;
+  SECTIONS.forEach(x=>{
+    const el=document.getElementById('sec-'+x);
+    if(el) el.style.display=x===s?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const navEl=document.getElementById('nav-'+s);
+  if(navEl) navEl.classList.add('active');
+  document.getElementById('bc-label').textContent=BC[s]||s;
+  if(s==='role') renderRoles();
+  else if(s==='sop') renderSOPs();
+  else if(s==='situation') renderSituations();
+  else if(s==='checklist') renderChecklists();
+  else if(s==='kpi') renderKPIs();
+  else if(s==='knowledge') renderKnowledge();
+  if(s!=='search') document.getElementById('searchInput').value='';
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════════════════════════════
+// RENDER ROLES
+// ════════════════════════════════════════════════
+function renderRoles(){
+  document.getElementById('roleGrid').innerHTML=ROLES.map(r=>`
+    <div class="role-card" onclick="openRoleModal('${r.id}')">
+      <div class="role-header">
+        <div class="role-avatar" style="background:${r.color}">${r.id}</div>
+        <div>
+          <div class="role-id">Mã: ${r.id}</div>
+          <div class="role-name">${r.name}</div>
+          <div class="role-reports">Báo cáo → ${r.reports_to}</div>
+        </div>
+      </div>
+      <div class="duty-list">${r.duties.slice(0,3).map(d=>`<div class="duty-item"><div class="duty-dot" style="background:${r.color}"></div>${d}</div>`).join('')}${r.duties.length>3?`<div class="duty-item"><div class="duty-dot" style="background:${r.color}"></div><em style="color:var(--dim)">+${r.duties.length-3} nhiệm vụ khác...</em></div>`:''}</div>
+      <div class="kpi-pills">${r.kpis.map(k=>`<span class="kpi-pill">🎯 ${k.name}: ${k.target}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function openRoleModal(id){
+  const r=ROLES.find(x=>x.id===id);
+  if(!r) return;
+  document.getElementById('modalTitle').textContent=r.name;
+  document.getElementById('modalSub').textContent=`Mã: ${r.id} · Báo cáo → ${r.reports_to}`;
+  document.getElementById('modalBody').innerHTML=`
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Nhiệm vụ chính</div>
+      ${r.duties.map((d,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="width:20px;height:20px;background:${r.color}22;color:${r.color};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:var(--mono)">${i+1}</span>
+        <span style="font-size:13px">${d}</span></div>`).join('')}
+    </div>
+    ${r.kpis.length?`<div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">KPI</div>
+      ${r.kpis.map(k=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:6px;margin-bottom:6px">
+        <span style="font-size:13px">${k.name}</span>
+        <span style="font-family:var(--mono);font-size:13px;color:var(--green)">${k.target}</span></div>`).join('')}</div>`:''}
+    ${r.checklists?`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Checklist liên quan</div><div style="font-size:13px;color:var(--blue)">${r.checklists}</div></div>`:''}
+    ${r.sops?`<div><div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">SOP liên quan</div><div style="font-size:13px;color:var(--purple)">${r.sops}</div></div>`:''}
+  `;
+  document.getElementById('overlay').classList.add('open');
+}
+
+// ════════════════════════════════════════════════
+// RENDER SOPs
+// ════════════════════════════════════════════════
+const SOP_CATS=[...new Set(SOPS.map(s=>s.cat))];
+
+function renderSOPs(){
+  // Filter row
+  document.getElementById('sopFilterRow').innerHTML=
+    ['all',...SOP_CATS].map(c=>`<div class="snav-item${sopFilter===c?' active':''}" onclick="sopFilter='${c}';renderSOPs()">${c==='all'?'Tất cả':c}</div>`).join('');
+  const filtered=sopFilter==='all'?SOPS:SOPS.filter(s=>s.cat===sopFilter);
+  document.getElementById('sopList').innerHTML=filtered.map(s=>sopCard(s)).join('');
+}
+
+function sopCard(s){
+  const catColor={'Mở ca':'var(--green)','Đóng ca':'var(--red)','Giao ca':'var(--amber)','Bán hàng':'var(--blue)','FnB':'var(--green)','Thu mua':'var(--purple)','Tài chính':'var(--cyan)','Xử lý sự cố':'var(--red)','CSKH':'var(--blue)','Kiểm soát':'var(--amber)','Vận hành':'var(--muted)','Nhân sự':'var(--pink)','An toàn':'var(--red)','Đào tạo':'var(--purple)','Vệ sinh':'var(--green)'}[s.cat]||'var(--muted)';
+  const hasSteps=s.steps&&s.steps.length>0;
+  return `<div class="sop-card" id="sop-${s.id}">
+    <div class="sop-header" onclick="toggleSOP('${s.id}')">
+      <span class="sop-num">${s.id}</span>
+      <span class="sop-title">${s.name}</span>
+      <div class="sop-meta">
+        <span class="badge" style="background:${catColor}22;color:${catColor};border:none;font-size:10px">${s.cat}</span>
+        <span style="font-size:11px;color:var(--muted)">${s.apply}</span>
+        ${hasSteps?'<span class="sop-chevron">▾</span>':'<span style="font-size:11px;color:var(--dim)">Chưa có nội dung</span>'}
+      </div>
+    </div>
+    ${hasSteps?`<div class="sop-body">
+      <div style="font-size:12px;color:var(--muted);margin:12px 0 8px">Áp dụng cho: <b style="color:var(--text)">${s.apply}</b></div>
+      <div class="step-list">${s.steps.map((st,i)=>`<div class="step-item">
+        <div class="step-num">${i+1}</div>
+        <div class="step-content">
+          <div class="step-desc">${st.d}</div>
+          <div class="step-meta">
+            <span class="step-who">👤 ${st.w}</span>
+            <span class="step-time">⏱ ${st.t}</span>
+          </div>
+        </div>
+      </div>`).join('')}</div>
+    </div>`:''}
+  </div>`;
+}
+
+function toggleSOP(id){
+  const card=document.getElementById('sop-'+id);
+  if(!card) return;
+  const s=SOPS.find(x=>x.id===id);
+  if(!s||!s.steps||!s.steps.length) return;
+  card.classList.toggle('open');
+}
+
+function openSOP(id){
+  const card=document.getElementById('sop-'+id);
+  if(card&&!card.classList.contains('open')) card.classList.add('open');
+  if(card) card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ════════════════════════════════════════════════
+// RENDER SITUATIONS
+// ════════════════════════════════════════════════
+const SIT_GROUPS=[...new Set(SITUATIONS.map(s=>s.group))];
+
+function renderSituations(){
+  document.getElementById('sitFilterRow').innerHTML=
+    ['all',...SIT_GROUPS].map(g=>`<div class="snav-item${sitFilter===g?' active':''}" onclick="sitFilter='${g}';renderSituations()">${g==='all'?'Tất cả':g}</div>`).join('');
+  const filtered=sitFilter==='all'?SITUATIONS:SITUATIONS.filter(s=>s.group===sitFilter);
+  document.getElementById('sitList').innerHTML=filtered.map(s=>sitCard(s)).join('');
+}
+
+function sitCard(s){
+  const groupColor={'Sự cố kỹ thuật':'var(--red)','Khách hàng':'var(--blue)','Nhân sự':'var(--amber)','An ninh':'var(--purple)'}[s.group]||'var(--muted)';
+  const levelColor=s.level.includes('TC')?'var(--red)':'var(--amber)';
+  return `<div class="sit-card" id="sit-${s.id}">
+    <div class="sit-header" onclick="toggleSIT('${s.id}')">
+      <span class="sit-level" style="background:${levelColor}22;color:${levelColor}">${s.level}</span>
+      <span class="sit-title">${s.title}</span>
+      <span class="sit-group-badge" style="background:${groupColor}22;color:${groupColor};border-radius:20px;font-size:11px;padding:2px 8px">${s.group}</span>
+      <span class="sop-chevron">▾</span>
+    </div>
+    <div class="sit-body">
+      <div class="sit-trigger">
+        <div class="sit-trigger-label">🔔 Trigger kích hoạt</div>
+        ${s.trigger}
+      </div>
+      <div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Các bước xử lý</div>
+      <div class="sit-steps">${s.steps.map((st,i)=>`<div class="sit-step"><div class="sit-step-n">${i+1}</div>${st}</div>`).join('')}</div>
+      ${s.donts.length?`<div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">❌ Điều cấm</div>
+      <div class="dont-list">${s.donts.map(d=>`<div class="dont-item"><span>✕</span>${d}</div>`).join('')}</div>`:''}
+      <div class="sit-footer">
+        ${s.kpi?`<span class="badge badge-blue">📈 ${s.kpi}</span>`:''}
+        ${s.escalate?`<span class="badge badge-red">↑ Báo: ${s.escalate}</span>`:''}
+        <span class="badge badge-gray">📍 ${s.location}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleSIT(id){
+  const card=document.getElementById('sit-'+id);
+  if(card) card.classList.toggle('open');
+}
+
+// ════════════════════════════════════════════════
+// RENDER CHECKLISTS
+// ════════════════════════════════════════════════
+function renderChecklists(){
+  document.getElementById('clGrid').innerHTML=CHECKLISTS.map(cl=>{
+    const total=cl.items.length;
+    const done=cl.items.filter((_,i)=>checked[cl.id+'_'+i]).length;
+    const pct=total?Math.round(done/total*100):0;
+    return `<div class="cl-card">
+      <div class="cl-header">
+        <div>
+          <div class="cl-name">${cl.name}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${cl.role} · ${cl.freq}</div>
+        </div>
+        <button onclick="resetCL('${cl.id}')" style="font-size:11px;background:none;border:1px solid var(--border);color:var(--dim);padding:3px 8px;border-radius:4px;cursor:pointer">Reset</button>
+      </div>
+      <div class="cl-progress">
+        <div class="cl-progress-bar"><div class="cl-progress-fill" id="bar-${cl.id}" style="width:${pct}%"></div></div>
+        <div class="cl-progress-text" id="prog-${cl.id}">${done}/${total} hoàn thành ${pct>0?'('+pct+'%)':''}</div>
+      </div>
+      <div class="cl-items">${cl.items.map((item,i)=>`
+        <div class="cl-item${checked[cl.id+'_'+i]?' checked':''}" onclick="toggleCheck('${cl.id}',${i})">
+          <div class="cl-check">${checked[cl.id+'_'+i]?'✓':''}</div>
+          <div class="cl-text">${item.d}</div>
+          <div class="cl-tag">${item.cat}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCheck(clId,idx){
+  const key=clId+'_'+idx;
+  checked[key]=!checked[key];
+  const cl=CHECKLISTS.find(x=>x.id===clId);
+  if(!cl) return;
+  const total=cl.items.length;
+  const done=cl.items.filter((_,i)=>checked[clId+'_'+i]).length;
+  const pct=Math.round(done/total*100);
+  // Update item
+  const items=document.querySelectorAll(`#clGrid .cl-card`);
+  // Re-render just this checklist
+  renderChecklists();
+}
+
+function resetCL(clId){
+  CHECKLISTS.find(x=>x.id===clId)?.items.forEach((_,i)=>delete checked[clId+'_'+i]);
+  renderChecklists();
+}
+
+// ════════════════════════════════════════════════
+// RENDER KPIs
+// ════════════════════════════════════════════════
+function renderKPIs(){
+  document.getElementById('kpiTableBody').innerHTML=KPIS.map(k=>`
+    <tr>
+      <td><div class="kpi-name">${k.name}</div><div style="font-size:11px;color:var(--muted)">${k.desc}</div></td>
+      <td style="color:var(--muted)">${k.unit}</td>
+      <td class="kpi-target">${k.target}</td>
+      <td class="kpi-warn">${k.warn}</td>
+      <td><span class="badge badge-gray">${k.scope}</span></td>
+      <td style="color:var(--muted)">${k.owner}</td>
+      <td style="font-size:12px;color:var(--dim)">${k.source}</td>
+    </tr>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// RENDER KNOWLEDGE
+// ════════════════════════════════════════════════
+function renderKnowledge(){
+  document.getElementById('kbGrid').innerHTML=KB.map(k=>`
+    <div class="kb-card" onclick="openKBModal('${k.id}')">
+      <div class="kb-cat">${k.cat}</div>
+      <div class="kb-title">${k.title}</div>
+      <div class="kb-stars">${'★'.repeat(k.rating)}${'☆'.repeat(5-k.rating)}</div>
+      <div class="kb-content">${k.content.slice(0,120)}${k.content.length>120?'...':''}</div>
+      <div class="kb-tags">${k.tags.map(t=>`<span class="kb-tag">#${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function openKBModal(id){
+  const k=KB.find(x=>x.id===id);
+  if(!k) return;
+  document.getElementById('modalTitle').textContent=k.title;
+  document.getElementById('modalSub').textContent=`${k.cat} · Đánh giá: ${'★'.repeat(k.rating)}`;
+  document.getElementById('modalBody').innerHTML=`
+    <div style="background:var(--bg3);border-radius:8px;padding:16px;margin-bottom:16px;font-size:14px;line-height:1.8;white-space:pre-line">${k.content}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${k.tags.map(t=>`<span class="kb-tag">#${t}</span>`).join('')}</div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+
+// ════════════════════════════════════════════════
+// SEARCH
+// ════════════════════════════════════════════════
+function handleSearch(q){
+  if(!q.trim()){if(currentSection==='search')setSection('home');return;}
+  const ql=q.toLowerCase();
+  const results=[];
+  SOPS.forEach(s=>{
+    if(s.name.toLowerCase().includes(ql)||s.cat.toLowerCase().includes(ql)||s.apply.toLowerCase().includes(ql)||s.steps.some(st=>st.d.toLowerCase().includes(ql))){
+      results.push({type:'SOP',id:s.id,title:s.name,preview:`${s.cat} · ${s.apply}`,action:()=>{setSection('sop');setTimeout(()=>toggleSOP(s.id),100);}});
+    }
+  });
+  SITUATIONS.forEach(s=>{
+    if(s.title.toLowerCase().includes(ql)||s.group.toLowerCase().includes(ql)||s.trigger.toLowerCase().includes(ql)||s.steps.some(st=>st.toLowerCase().includes(ql))){
+      results.push({type:'Tình huống',id:s.id,title:s.title,preview:`${s.group} · ${s.location}`,action:()=>{setSection('situation');setTimeout(()=>toggleSIT(s.id),100);}});
+    }
+  });
+  ROLES.forEach(r=>{
+    if(r.name.toLowerCase().includes(ql)||r.id.toLowerCase().includes(ql)||r.duties.some(d=>d.toLowerCase().includes(ql))){
+      results.push({type:'Role',id:r.id,title:r.name,preview:r.duties[0],action:()=>{setSection('role');setTimeout(()=>openRoleModal(r.id),100);}});
+    }
+  });
+  KB.forEach(k=>{
+    if(k.title.toLowerCase().includes(ql)||k.content.toLowerCase().includes(ql)||k.tags.some(t=>t.includes(ql))){
+      results.push({type:'Knowledge',id:k.id,title:k.title,preview:k.cat,action:()=>{setSection('knowledge');setTimeout(()=>openKBModal(k.id),100);}});
+    }
+  });
+
+  SECTIONS.forEach(x=>{const el=document.getElementById('sec-'+x);if(el)el.style.display=x==='search'?'block':'none';});
+  document.getElementById('bc-label').textContent='Tìm kiếm';
+  document.getElementById('searchMeta').textContent=`${results.length} kết quả cho "${q}"`;
+  document.getElementById('searchResults').innerHTML=results.length
+    ? results.map(r=>`<div class="sr-item" onclick="(${r.action.toString()})()">
+        <div class="sr-type">${r.type} · ${r.id}</div>
+        <div class="sr-title">${highlight(r.title,ql)}</div>
+        <div class="sr-preview">${highlight(r.preview,ql)}</div>
+      </div>`).join('')
+    : `<div class="empty"><div class="empty-icon">🔍</div><div>Không tìm thấy kết quả cho "<b>${q}</b>"</div></div>`;
+}
+
+function highlight(text,q){
+  return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),'<mark class="sr-highlight">$1</mark>');
+}
+
+// ════════════════════════════════════════════════
+// MODAL
+// ════════════════════════════════════════════════
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+setSection('home');
+</script>
+</body>
+</html>
