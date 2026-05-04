@@ -281,19 +281,32 @@ body{
       <div class="logo-name">OEG Cyber Hub</div>
     </div>
     <h1>Phản hồi nhanh</h1>
-    <p>4 câu · dưới 1 phút · cảm ơn bạn rất nhiều!</p>
+    <p>5 câu · dưới 1 phút · cảm ơn bạn rất nhiều!</p>
   </div>
   <div class="progress" id="progress">
     <div class="prog-seg active" id="p0"></div>
     <div class="prog-seg" id="p1"></div>
     <div class="prog-seg" id="p2"></div>
     <div class="prog-seg" id="p3"></div>
+    <div class="prog-seg" id="p4"></div>
   </div>
 
   <div class="body" id="formBody">
-    <!-- Q1: Branch -->
+    <!-- Q0: Tên tài khoản -->
+    <div class="q" id="q0">
+      <div class="q-label"><span class="q-num">1</span>Tên tài khoản của bạn?</div>
+      <input type="text" id="playerName" placeholder="Nhập tên tài khoản..." maxlength="50"
+        style="width:100%;border:1.5px solid var(--border);border-radius:var(--r2);
+        padding:12px 14px;font-family:var(--font);font-size:14px;color:var(--text);
+        background:var(--bg);outline:none;-webkit-appearance:none;transition:border-color .15s"
+        oninput="updateProgress()"
+        onfocus="this.style.borderColor='var(--red)'"
+        onblur="this.style.borderColor='var(--border)'"/>
+    </div>
+
+    <!-- Q2: Branch -->
     <div class="q" id="q1">
-      <div class="q-label"><span class="q-num">1</span>Bạn đang ở cơ sở nào?</div>
+      <div class="q-label"><span class="q-num">2</span>Bạn đang ở cơ sở nào?</div>
       <div class="branch-grid">
         <button class="branch-btn" onclick="selBranch('Stadium',this)">Stadium</button>
         <button class="branch-btn" onclick="selBranch('Tây Sơn',this)">Tây Sơn</button>
@@ -306,7 +319,7 @@ body{
 
     <!-- Q2: CSAT -->
     <div class="q" id="q2">
-      <div class="q-label"><span class="q-num">2</span>Hôm nay bạn hài lòng không?</div>
+      <div class="q-label"><span class="q-num">3</span>Hôm nay bạn hài lòng không?</div>
       <div class="csat-row">
         <button class="csat-btn" onclick="selCSAT(1,this)"><span class="n">1</span><span class="l">Rất tệ</span></button>
         <button class="csat-btn" onclick="selCSAT(2,this)"><span class="n">2</span><span class="l">Tệ</span></button>
@@ -318,7 +331,7 @@ body{
 
     <!-- Q3: NPS -->
     <div class="q" id="q3">
-      <div class="q-label"><span class="q-num">3</span>Bạn có giới thiệu OEG cho bạn bè không?</div>
+      <div class="q-label"><span class="q-num">4</span>Bạn có giới thiệu OEG cho bạn bè không?</div>
       <div class="nps-wrap">
         <div class="nps-row">
           <button class="nps-btn det" onclick="selNPS(0,this)">0</button>
@@ -343,7 +356,7 @@ body{
     <!-- Q4: Comment -->
     <div class="q" id="q4">
       <div class="q-label">
-        <span class="q-num">4</span>
+        <span class="q-num">5</span>
         Có điều gì muốn nhắn gửi?
         <span class="q-opt">(tùy chọn)</span>
       </div>
@@ -406,9 +419,16 @@ function selNPS(val, el) {
 
 // ─── PROGRESS BAR ────────────────────────────────────────────────────
 function updateProgress() {
-  const filled = [state.branch, state.csat, state.nps].filter(v => v !== null).length;
-  for (let i = 0; i < 4; i++) {
+  const name = (document.getElementById('playerName')?.value || '').trim();
+  const filled = [
+    name ? name : null,
+    state.branch,
+    state.csat,
+    state.nps
+  ].filter(v => v !== null).length;
+  for (let i = 0; i < 5; i++) {
     const seg = document.getElementById('p' + i);
+    if (!seg) continue;
     seg.className = 'prog-seg';
     if (i < filled) seg.classList.add('done');
     else if (i === filled) seg.classList.add('active');
@@ -417,9 +437,11 @@ function updateProgress() {
 
 // ─── SUBMIT ──────────────────────────────────────────────────────────
 async function submit() {
-  if (!state.branch) { showToast('Vui lòng chọn cơ sở (câu 1)'); return; }
-  if (state.csat === null) { showToast('Vui lòng chọn điểm hài lòng (câu 2)'); return; }
-  if (state.nps === null) { showToast('Vui lòng chọn điểm giới thiệu (câu 3)'); return; }
+  const playerName = (document.getElementById('playerName')?.value || '').trim();
+  if (!playerName) { showToast('Vui lòng nhập tên tài khoản (câu 1)'); return; }
+  if (!state.branch) { showToast('Vui lòng chọn cơ sở (câu 2)'); return; }
+  if (state.csat === null) { showToast('Vui lòng chọn điểm hài lòng (câu 3)'); return; }
+  if (state.nps === null) { showToast('Vui lòng chọn điểm giới thiệu (câu 4)'); return; }
 
   const comment = document.getElementById('comment').value.trim();
 
@@ -429,7 +451,7 @@ async function submit() {
   // Submit vào Google Form qua hidden iframe (no-cors, không cần CORS header)
   try {
     const params = new URLSearchParams({
-      [ENTRY.name]:    'OEG_Survey_Web',
+      [ENTRY.name]:    playerName,
       [ENTRY.branch]:  state.branch,
       [ENTRY.csat]:    state.csat,
       [ENTRY.nps]:     state.nps,
