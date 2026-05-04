@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>OEG Cyber Hub — Phản hồi nhanh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --red:#E8324A;--red-d:#C4273C;--red-lt:#FCEBEB;
+  --green:#1D9E75;--green-lt:#E1F5EE;
+  --amber:#BA7517;--amber-lt:#FAEEDA;
+  --bg:#F7F5F0;--bg2:#FFFFFF;
+  --text:#1A1A1A;--muted:#6B6862;--dim:#B0AEA8;
+  --border:#E5E2DC;
+  --font:'Be Vietnam Pro',sans-serif;
+  --r:14px;--r2:10px;
+}
+html{background:var(--bg);min-height:100vh}
+body{
+  font-family:var(--font);background:var(--bg);
+  color:var(--text);min-height:100vh;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:0 0 48px;
+}
+
+/* ── CARD ── */
+.card{
+  width:100%;max-width:480px;
+  background:var(--bg2);
+  border-radius:0 0 20px 20px;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,0.08);
+}
+
+/* ── HEADER ── */
+.header{
+  background:var(--red);
+  padding:24px 24px 20px;
+  position:relative;
+  overflow:hidden;
+}
+.header::before{
+  content:'';position:absolute;
+  top:-40px;right:-40px;
+  width:160px;height:160px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.07);
+}
+.header::after{
+  content:'';position:absolute;
+  bottom:-60px;left:-20px;
+  width:200px;height:200px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.04);
+}
+.header-logo{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:12px;position:relative;z-index:1;
+}
+.logo-box{
+  width:32px;height:32px;background:rgba(255,255,255,0.2);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:11px;color:#fff;letter-spacing:-0.5px;
+}
+.logo-name{font-size:13px;font-weight:600;color:rgba(255,255,255,0.9)}
+.header h1{
+  font-size:20px;font-weight:800;color:#fff;
+  line-height:1.2;margin-bottom:4px;
+  position:relative;z-index:1;
+}
+.header p{font-size:13px;color:rgba(255,255,255,0.75);position:relative;z-index:1}
+
+/* ── PROGRESS ── */
+.progress{
+  display:flex;gap:4px;padding:0 24px;
+  background:var(--red);padding-bottom:16px;
+}
+.prog-seg{
+  flex:1;height:3px;border-radius:2px;
+  background:rgba(255,255,255,0.25);
+  transition:background .3s;
+}
+.prog-seg.active{background:rgba(255,255,255,0.9)}
+.prog-seg.done{background:rgba(255,255,255,0.6)}
+
+/* ── BODY ── */
+.body{padding:24px}
+
+/* ── QUESTION BLOCK ── */
+.q{margin-bottom:24px;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.q-label{
+  display:flex;align-items:center;gap:10px;
+  font-size:15px;font-weight:600;color:var(--text);
+  margin-bottom:12px;line-height:1.4;
+}
+.q-num{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--red);color:#fff;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.q-opt{font-size:13px;color:var(--muted);font-weight:400}
+
+/* ── BRANCH GRID ── */
+.branch-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.branch-btn{
+  padding:12px 8px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r2);
+  background:var(--bg2);
+  color:var(--muted);
+  font-family:var(--font);font-size:13px;font-weight:500;
+  cursor:pointer;text-align:center;
+  transition:all .15s;
+  -webkit-appearance:none;
+}
+.branch-btn:active{transform:scale(0.97)}
+.branch-btn.sel{
+  border-color:var(--red);
+  background:var(--red-lt);
+  color:var(--red-d);
+}
+
+/* ── CSAT SCALE ── */
+.csat-row{display:flex;gap:6px}
+.csat-btn{
+  flex:1;padding:10px 4px 8px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r2);
+  background:var(--bg2);
+  color:var(--muted);
+  font-family:var(--font);cursor:pointer;
+  text-align:center;transition:all .15s;
+  -webkit-appearance:none;
+}
+.csat-btn .n{
+  display:block;font-size:18px;font-weight:700;
+  margin-bottom:3px;color:var(--text);
+}
+.csat-btn .l{font-size:10px;font-weight:500;line-height:1.3}
+.csat-btn:active{transform:scale(0.95)}
+.csat-btn.sel{
+  border-color:var(--green);
+  background:var(--green-lt);
+  color:var(--green);
+}
+.csat-btn.sel .n{color:var(--green)}
+
+/* ── NPS SCALE ── */
+.nps-wrap{display:flex;flex-direction:column;gap:6px}
+.nps-row{display:flex;gap:4px}
+.nps-btn{
+  flex:1;
+  aspect-ratio:1;
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  background:var(--bg2);
+  font-family:var(--font);font-size:13px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;color:var(--muted);
+  -webkit-appearance:none;
+  min-height:38px;
+}
+.nps-btn:active{transform:scale(0.93)}
+.nps-btn.det{background:#FCEBEB;border-color:#F5C1C1;color:#C0302F}
+.nps-btn.pas{background:#FAEEDA;border-color:#F5D59A;color:#8A5508}
+.nps-btn.pro{background:#E1F5EE;border-color:#9FE1CB;color:#0F6E56}
+.nps-btn.sel.det{background:#E8324A;border-color:#E8324A;color:#fff}
+.nps-btn.sel.pas{background:#BA7517;border-color:#BA7517;color:#fff}
+.nps-btn.sel.pro{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.nps-legend{
+  display:flex;justify-content:space-between;
+  font-size:11px;color:var(--dim);
+  padding:0 2px;
+}
+
+/* ── COMMENT ── */
+.comment-wrap textarea{
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:var(--r2);
+  padding:12px 14px;
+  font-family:var(--font);font-size:14px;
+  color:var(--text);background:var(--bg);
+  resize:none;min-height:80px;
+  transition:border-color .15s;
+  outline:none;
+  -webkit-appearance:none;
+}
+.comment-wrap textarea:focus{border-color:var(--red)}
+.comment-wrap textarea::placeholder{color:var(--dim)}
+
+/* ── SUBMIT ── */
+.submit-btn{
+  width:100%;padding:15px;
+  background:var(--red);
+  color:#fff;border:none;border-radius:var(--r2);
+  font-family:var(--font);font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .15s;
+  -webkit-appearance:none;
+  letter-spacing:0.3px;
+}
+.submit-btn:active{transform:scale(0.98);background:var(--red-d)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* ── FOOTER ── */
+.footer{
+  padding:12px 24px 20px;
+  text-align:center;
+  font-size:11px;color:var(--dim);
+  border-top:1px solid var(--border);
+  margin-top:16px;
+}
+
+/* ── SUCCESS ── */
+.success{
+  padding:48px 24px;text-align:center;
+  animation:fadeUp .4s ease;
+}
+.success-icon{
+  width:72px;height:72px;
+  background:var(--green-lt);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  font-size:32px;
+}
+.success h2{font-size:22px;font-weight:800;margin-bottom:8px}
+.success p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.success-summary{
+  background:var(--bg);border-radius:var(--r2);
+  padding:14px 16px;text-align:left;
+  font-size:13px;color:var(--muted);
+  line-height:1.8;
+}
+.success-summary b{color:var(--text);font-weight:600}
+
+/* ── LOADING ── */
+.loading-overlay{
+  position:fixed;inset:0;
+  background:rgba(255,255,255,0.85);
+  display:flex;align-items:center;justify-content:center;
+  z-index:100;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+.loading-overlay.show{opacity:1;pointer-events:all}
+.spinner{
+  width:32px;height:32px;border-radius:50%;
+  border:3px solid var(--border);
+  border-top-color:var(--red);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── ERROR TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:#1A1A1A;color:#fff;
+  padding:10px 18px;border-radius:20px;
+  font-size:13px;font-weight:500;
+  opacity:0;transition:all .25s;
+  white-space:nowrap;z-index:200;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <div class="header">
+    <div class="header-logo">
+      <div class="logo-box">OCH</div>
+      <div class="logo-name">OEG Cyber Hub</div>
+    </div>
+    <h1>Phản hồi nhanh</h1>
+    <p>5 câu · dưới 1 phút · cảm ơn bạn rất nhiều!</p>
+  </div>
+  <div class="progress" id="progress">
+    <div class="prog-seg active" id="p0"></div>
+    <div class="prog-seg" id="p1"></div>
+    <div class="prog-seg" id="p2"></div>
+    <div class="prog-seg" id="p3"></div>
+    <div class="prog-seg" id="p4"></div>
+  </div>
+
+  <div class="body" id="formBody">
+    <!-- Q0: Tên tài khoản -->
+    <div class="q" id="q0">
+      <div class="q-label"><span class="q-num">1</span>Tên tài khoản của bạn?</div>
+      <input type="text" id="playerName" placeholder="Nhập tên tài khoản..." maxlength="50"
+        style="width:100%;border:1.5px solid var(--border);border-radius:var(--r2);
+        padding:12px 14px;font-family:var(--font);font-size:14px;color:var(--text);
+        background:var(--bg);outline:none;-webkit-appearance:none;transition:border-color .15s"
+        oninput="updateProgress()"
+        onfocus="this.style.borderColor='var(--red)'"
+        onblur="this.style.borderColor='var(--border)'"/>
+    </div>
+
+    <!-- Q2: Branch -->
+    <div class="q" id="q1">
+      <div class="q-label"><span class="q-num">2</span>Bạn đang ở cơ sở nào?</div>
+      <div class="branch-grid">
+        <button class="branch-btn" onclick="selBranch('Stadium',this)">Stadium</button>
+        <button class="branch-btn" onclick="selBranch('Tây Sơn',this)">Tây Sơn</button>
+        <button class="branch-btn" onclick="selBranch('LL Quân',this)">LL Quân</button>
+        <button class="branch-btn" onclick="selBranch('Trần Vỹ',this)">Trần Vỹ</button>
+        <button class="branch-btn" onclick="selBranch('TQ Hoàn',this)">TQ Hoàn</button>
+        <button class="branch-btn" onclick="selBranch('Chiến Thắng',this)">Chiến Thắng</button>
+      </div>
+    </div>
+
+    <!-- Q2: CSAT -->
+    <div class="q" id="q2">
+      <div class="q-label"><span class="q-num">3</span>Hôm nay bạn hài lòng không?</div>
+      <div class="csat-row">
+        <button class="csat-btn" onclick="selCSAT(1,this)"><span class="n">1</span><span class="l">Rất tệ</span></button>
+        <button class="csat-btn" onclick="selCSAT(2,this)"><span class="n">2</span><span class="l">Tệ</span></button>
+        <button class="csat-btn" onclick="selCSAT(3,this)"><span class="n">3</span><span class="l">Bình thường</span></button>
+        <button class="csat-btn" onclick="selCSAT(4,this)"><span class="n">4</span><span class="l">Tốt</span></button>
+        <button class="csat-btn" onclick="selCSAT(5,this)"><span class="n">5</span><span class="l">Tuyệt!</span></button>
+      </div>
+    </div>
+
+    <!-- Q3: NPS -->
+    <div class="q" id="q3">
+      <div class="q-label"><span class="q-num">4</span>Bạn có giới thiệu OEG cho bạn bè không?</div>
+      <div class="nps-wrap">
+        <div class="nps-row">
+          <button class="nps-btn det" onclick="selNPS(0,this)">0</button>
+          <button class="nps-btn det" onclick="selNPS(1,this)">1</button>
+          <button class="nps-btn det" onclick="selNPS(2,this)">2</button>
+          <button class="nps-btn det" onclick="selNPS(3,this)">3</button>
+          <button class="nps-btn det" onclick="selNPS(4,this)">4</button>
+          <button class="nps-btn det" onclick="selNPS(5,this)">5</button>
+          <button class="nps-btn det" onclick="selNPS(6,this)">6</button>
+          <button class="nps-btn pas" onclick="selNPS(7,this)">7</button>
+          <button class="nps-btn pas" onclick="selNPS(8,this)">8</button>
+          <button class="nps-btn pro" onclick="selNPS(9,this)">9</button>
+          <button class="nps-btn pro" onclick="selNPS(10,this)">10</button>
+        </div>
+        <div class="nps-legend">
+          <span>Chắc chắn không</span>
+          <span>Chắc chắn có</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4: Comment -->
+    <div class="q" id="q4">
+      <div class="q-label">
+        <span class="q-num">5</span>
+        Có điều gì muốn nhắn gửi?
+        <span class="q-opt">(tùy chọn)</span>
+      </div>
+      <div class="comment-wrap">
+        <textarea id="comment" placeholder="Chia sẻ thêm nếu bạn muốn..." maxlength="500" rows="3"></textarea>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="submit()" id="submitBtn">Gửi phản hồi</button>
+  </div>
+
+  <div class="footer">
+    OEG Cyber Hub · Hà Nội · Thông tin của bạn được bảo mật hoàn toàn
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────
+// Apps Script Web App URL — nhận POST và ghi thẳng vào Sheets
+// Không cần Google Form làm trung gian
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxomd7l0O7a4RT9nFTcw7nB7Xtcyu1tfk736LTe7nLcrFfN43OCAwell3O6JQw7jKHt/exec';
+
+// Fallback: ghi tạm vào localStorage nếu offline
+const USE_LOCALSTORAGE_FALLBACK = true;
+
+// ─── STATE ────────────────────────────────────────────────────────────
+const state = { branch: null, csat: null, nps: null };
+
+// ─── SELECTION ────────────────────────────────────────────────────────
+function selBranch(val, el) {
+  state.branch = val;
+  document.querySelectorAll('.branch-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProgress();
+}
+function selCSAT(val, el) {
+  state.csat = val;
+  document.querySelectorAll('.csat-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProgress();
+}
+function selNPS(val, el) {
+  state.nps = val;
+  document.querySelectorAll('.nps-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProgress();
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────
+function updateProgress() {
+  const name   = (document.getElementById('playerName')?.value || '').trim();
+  const filled = [name||null, state.branch, state.csat, state.nps].filter(v=>v!==null).length;
+  for (let i = 0; i < 5; i++) {
+    const seg = document.getElementById('p' + i);
+    if (!seg) continue;
+    seg.className = 'prog-seg';
+    if (i < filled) seg.classList.add('done');
+    else if (i === filled) seg.classList.add('active');
+  }
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────────────────
+async function submit() {
+  const playerName = (document.getElementById('playerName')?.value || '').trim();
+  if (!playerName)        { showToast('Vui lòng nhập tên tài khoản (câu 1)'); return; }
+  if (!state.branch)      { showToast('Vui lòng chọn cơ sở (câu 2)'); return; }
+  if (state.csat === null){ showToast('Vui lòng chọn điểm hài lòng (câu 3)'); return; }
+  if (state.nps === null) { showToast('Vui lòng chọn điểm giới thiệu (câu 4)'); return; }
+
+  const comment = (document.getElementById('comment').value || '').trim();
+  const payload = {
+    action:  'submitCLDV',
+    name:    playerName,
+    branch:  state.branch,
+    csat:    state.csat,
+    nps:     state.nps,
+    comment: comment,
+  };
+
+  showLoading(true);
+  document.getElementById('submitBtn').disabled = true;
+
+  let ok = false;
+
+  // ── Thử Apps Script Web App ──
+  if (WEB_APP_URL !== 'PASTE_WEB_APP_URL_HERE') {
+    try {
+      // no-cors: không đọc được response nhưng request vẫn tới server
+      await fetch(WEB_APP_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body:    JSON.stringify(payload),
+      });
+      ok = true;
+    } catch (err) {
+      console.warn('POST failed:', err.message);
+    }
+
+    // Thử GET fallback (Apps Script doGet)
+    if (!ok) {
+      try {
+        const qs = new URLSearchParams(payload).toString();
+        await fetch(WEB_APP_URL + '?' + qs, { method: 'GET', mode: 'no-cors' });
+        ok = true;
+      } catch (err) {
+        console.warn('GET failed:', err.message);
+      }
+    }
+  }
+
+  // ── Fallback: lưu localStorage ──
+  if (!ok && USE_LOCALSTORAGE_FALLBACK) {
+    try {
+      const queue = JSON.parse(localStorage.getItem('oeg_survey_queue') || '[]');
+      queue.push({ ...payload, ts: new Date().toISOString() });
+      localStorage.setItem('oeg_survey_queue', JSON.stringify(queue));
+      ok = true;
+      console.log('Saved to localStorage queue, length:', queue.length);
+    } catch (e) {}
+  }
+
+  showLoading(false);
+  // Luôn hiện success với no-cors (không đọc được response)
+  showSuccess(playerName, comment);
+}
+
+// ─── SUCCESS ──────────────────────────────────────────────────────────
+function showSuccess(playerName, comment) {
+  const seg = state.nps >= 9 ? 'Promoter' : state.nps >= 7 ? 'Passive' : 'Detractor';
+  const segLabel = { Promoter: '😊 Sẽ giới thiệu', Passive: '😐 Có thể', Detractor: '😟 Chưa chắc' }[seg];
+  document.getElementById('formBody').style.display = 'none';
+
+  const div = document.createElement('div');
+  div.className = 'success';
+  div.innerHTML = \`
+    <div class="success-icon">🙏</div>
+    <h2>Cảm ơn \${playerName}!</h2>
+    <p>Phản hồi của bạn đã được ghi nhận.<br>Điều này giúp OEG ngày càng tốt hơn.</p>
+    <div class="success-summary">
+      <div>Cơ sở: <b>\${state.branch}</b></div>
+      <div>Hài lòng: <b>\${state.csat}/5</b></div>
+      <div>Giới thiệu: <b>\${state.nps}/10</b> · \${segLabel}</div>
+      \${comment ? '<div>Ghi chú: <i>' + comment + '</i></div>' : ''}
+    </div>
+  \`;
+  document.getElementById('card').insertBefore(div, document.querySelector('.footer'));
+  for (let i = 0; i < 5; i++) {
+    const s = document.getElementById('p'+i);
+    if (s) s.className = 'prog-seg done';
+  }
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────
+function showLoading(show) {
+  document.getElementById('loading').classList.toggle('show', show);
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
