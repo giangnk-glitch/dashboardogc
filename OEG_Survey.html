@@ -503,3 +503,36 @@ function showToast(msg) {
 </script>
 </body>
 </html>
+// ═══════════════════════════════════════════════════════════════════
+// CHẠY HÀM getNày getFormEntryIds() TRONG APPS SCRIPT
+// Sẽ log ra tất cả entry IDs của form
+// ═══════════════════════════════════════════════════════════════════
+ 
+function getFormEntryIds() {
+  const FORM_ID = '1qKLlSiyNRVzBIRftATrQSYQ01QzAE15o77XS_fiBt-4';
+  
+  try {
+    const form  = FormApp.openById(FORM_ID);
+    const items = form.getItems();
+    
+    Logger.log('=== FORM: ' + form.getTitle() + ' ===');
+    Logger.log('Form URL: ' + form.getPublishedUrl());
+    Logger.log('');
+    
+    items.forEach(function(item, i) {
+      Logger.log('Q' + (i+1) + ': ' + item.getTitle());
+      Logger.log('   Type: ' + item.getType());
+      Logger.log('   ID: entry.' + item.getId());
+      Logger.log('');
+    });
+    
+    // Build submit URL template
+    const baseUrl = 'https://docs.google.com/forms/d/' + FORM_ID + '/formResponse';
+    Logger.log('=== Submit URL: ' + baseUrl);
+    Logger.log('');
+    Logger.log('Copy các entry IDs trên vào OEG_Survey.html');
+    
+  } catch(err) {
+    Logger.log('Lỗi: ' + err.message);
+  }
+}
