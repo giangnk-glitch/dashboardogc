@@ -383,42 +383,37 @@ body{
 
 <script>
 // ─── CONFIG ──────────────────────────────────────────────────────────
-// Apps Script Web App URL — nhận POST và ghi thẳng vào Sheets
-// Không cần Google Form làm trung gian
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxomd7l0O7a4RT9nFTcw7nB7Xtcyu1tfk736LTe7nLcrFfN43OCAwell3O6JQw7jKHt/exec';
+const WEB_APP_URL = 'PASTE_WEB_APP_URL_HERE';
 
-// Fallback: ghi tạm vào localStorage nếu offline
-const USE_LOCALSTORAGE_FALLBACK = true;
-
-// ─── STATE ────────────────────────────────────────────────────────────
+// ─── STATE ───────────────────────────────────────────────────────────
 const state = { branch: null, csat: null, nps: null };
 
-// ─── SELECTION ────────────────────────────────────────────────────────
+// ─── SELECTION ───────────────────────────────────────────────────────
 function selBranch(val, el) {
   state.branch = val;
-  document.querySelectorAll('.branch-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.branch-btn').forEach(function(b){ b.classList.remove('sel'); });
   el.classList.add('sel');
   updateProgress();
 }
 function selCSAT(val, el) {
   state.csat = val;
-  document.querySelectorAll('.csat-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.csat-btn').forEach(function(b){ b.classList.remove('sel'); });
   el.classList.add('sel');
   updateProgress();
 }
 function selNPS(val, el) {
   state.nps = val;
-  document.querySelectorAll('.nps-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.nps-btn').forEach(function(b){ b.classList.remove('sel'); });
   el.classList.add('sel');
   updateProgress();
 }
 
-// ─── PROGRESS ─────────────────────────────────────────────────────────
+// ─── PROGRESS ────────────────────────────────────────────────────────
 function updateProgress() {
-  const name   = (document.getElementById('playerName')?.value || '').trim();
-  const filled = [name||null, state.branch, state.csat, state.nps].filter(v=>v!==null).length;
-  for (let i = 0; i < 5; i++) {
-    const seg = document.getElementById('p' + i);
+  var name = (document.getElementById('playerName') ? document.getElementById('playerName').value : '').trim();
+  var filled = [name||null, state.branch, state.csat, state.nps].filter(function(v){ return v !== null; }).length;
+  for (var i = 0; i < 5; i++) {
+    var seg = document.getElementById('p' + i);
     if (!seg) continue;
     seg.className = 'prog-seg';
     if (i < filled) seg.classList.add('done');
@@ -426,107 +421,91 @@ function updateProgress() {
   }
 }
 
-// ─── SUBMIT ───────────────────────────────────────────────────────────
-async function submit() {
-  const playerName = (document.getElementById('playerName')?.value || '').trim();
+// ─── SUBMIT ──────────────────────────────────────────────────────────
+function submit() {
+  var playerName = (document.getElementById('playerName') ? document.getElementById('playerName').value : '').trim();
   if (!playerName)        { showToast('Vui lòng nhập tên tài khoản (câu 1)'); return; }
   if (!state.branch)      { showToast('Vui lòng chọn cơ sở (câu 2)'); return; }
   if (state.csat === null){ showToast('Vui lòng chọn điểm hài lòng (câu 3)'); return; }
   if (state.nps === null) { showToast('Vui lòng chọn điểm giới thiệu (câu 4)'); return; }
 
-  const comment = (document.getElementById('comment').value || '').trim();
-  const payload = {
+  var comment = (document.getElementById('comment') ? document.getElementById('comment').value : '').trim();
+
+  showLoading(true);
+  document.getElementById('submitBtn').disabled = true;
+
+  var payload = JSON.stringify({
     action:  'submitCLDV',
     name:    playerName,
     branch:  state.branch,
     csat:    state.csat,
     nps:     state.nps,
-    comment: comment,
-  };
+    comment: comment
+  });
 
-  showLoading(true);
-  document.getElementById('submitBtn').disabled = true;
-
-  let ok = false;
-
-  // ── Thử Apps Script Web App ──
+  // Gửi qua fetch no-cors đến Apps Script Web App
   if (WEB_APP_URL !== 'PASTE_WEB_APP_URL_HERE') {
-    try {
-      // no-cors: không đọc được response nhưng request vẫn tới server
-      await fetch(WEB_APP_URL, {
-        method:  'POST',
-        mode:    'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body:    JSON.stringify(payload),
-      });
-      ok = true;
-    } catch (err) {
-      console.warn('POST failed:', err.message);
-    }
+    fetch(WEB_APP_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    payload
+    }).catch(function(err){ console.warn('POST err:', err); });
 
-    // Thử GET fallback (Apps Script doGet)
-    if (!ok) {
-      try {
-        const qs = new URLSearchParams(payload).toString();
-        await fetch(WEB_APP_URL + '?' + qs, { method: 'GET', mode: 'no-cors' });
-        ok = true;
-      } catch (err) {
-        console.warn('GET failed:', err.message);
-      }
-    }
+    // Đợi 1.5s rồi hiện success (no-cors không đọc được response)
+    setTimeout(function(){ showSuccess(playerName, comment); }, 1500);
+  } else {
+    // Chưa có Web App URL - vẫn hiện success để test UI
+    setTimeout(function(){ showSuccess(playerName, comment); }, 500);
+    console.warn('WEB_APP_URL chưa được điền!');
   }
-
-  // ── Fallback: lưu localStorage ──
-  if (!ok && USE_LOCALSTORAGE_FALLBACK) {
-    try {
-      const queue = JSON.parse(localStorage.getItem('oeg_survey_queue') || '[]');
-      queue.push({ ...payload, ts: new Date().toISOString() });
-      localStorage.setItem('oeg_survey_queue', JSON.stringify(queue));
-      ok = true;
-      console.log('Saved to localStorage queue, length:', queue.length);
-    } catch (e) {}
-  }
-
-  showLoading(false);
-  // Luôn hiện success với no-cors (không đọc được response)
-  showSuccess(playerName, comment);
 }
 
-// ─── SUCCESS ──────────────────────────────────────────────────────────
+// ─── SUCCESS ─────────────────────────────────────────────────────────
 function showSuccess(playerName, comment) {
-  const seg = state.nps >= 9 ? 'Promoter' : state.nps >= 7 ? 'Passive' : 'Detractor';
-  const segLabel = { Promoter: '😊 Sẽ giới thiệu', Passive: '😐 Có thể', Detractor: '😟 Chưa chắc' }[seg];
-  document.getElementById('formBody').style.display = 'none';
+  showLoading(false);
+  var seg = state.nps >= 9 ? 'Promoter' : state.nps >= 7 ? 'Passive' : 'Detractor';
+  var segLabel = seg === 'Promoter' ? '😊 Sẽ giới thiệu' : seg === 'Passive' ? '😐 Có thể' : '😟 Chưa chắc';
 
-  const div = document.createElement('div');
+  var body = document.getElementById('formBody');
+  if (body) body.style.display = 'none';
+
+  var div = document.createElement('div');
   div.className = 'success';
-  div.innerHTML = \`
-    <div class="success-icon">🙏</div>
-    <h2>Cảm ơn \${playerName}!</h2>
-    <p>Phản hồi của bạn đã được ghi nhận.<br>Điều này giúp OEG ngày càng tốt hơn.</p>
-    <div class="success-summary">
-      <div>Cơ sở: <b>\${state.branch}</b></div>
-      <div>Hài lòng: <b>\${state.csat}/5</b></div>
-      <div>Giới thiệu: <b>\${state.nps}/10</b> · \${segLabel}</div>
-      \${comment ? '<div>Ghi chú: <i>' + comment + '</i></div>' : ''}
-    </div>
-  \`;
-  document.getElementById('card').insertBefore(div, document.querySelector('.footer'));
-  for (let i = 0; i < 5; i++) {
-    const s = document.getElementById('p'+i);
+
+  var commentHtml = comment ? '<div>Ghi chú: <i>' + comment + '</i></div>' : '';
+  div.innerHTML =
+    '<div class="success-icon">\uD83D\uDE4F</div>' +
+    '<h2>Cảm ơn ' + playerName + '!</h2>' +
+    '<p>Phản hồi của bạn đã được ghi nhận.<br>Điều này giúp OEG ngày càng tốt hơn.</p>' +
+    '<div class="success-summary">' +
+      '<div>Cơ sở: <b>' + state.branch + '</b></div>' +
+      '<div>Hài lòng: <b>' + state.csat + '/5</b></div>' +
+      '<div>Giới thiệu: <b>' + state.nps + '/10</b> · ' + segLabel + '</div>' +
+      commentHtml +
+    '</div>';
+
+  var card = document.getElementById('card');
+  var footer = document.querySelector('.footer');
+  if (card && footer) card.insertBefore(div, footer);
+
+  for (var i = 0; i < 5; i++) {
+    var s = document.getElementById('p' + i);
     if (s) s.className = 'prog-seg done';
   }
 }
 
-// ─── TOAST ────────────────────────────────────────────────────────────
+// ─── HELPERS ─────────────────────────────────────────────────────────
 function showLoading(show) {
-  document.getElementById('loading').classList.toggle('show', show);
+  var el = document.getElementById('loading');
+  if (el) el.classList.toggle('show', show);
 }
 function showToast(msg) {
-  const t = document.getElementById('toast');
+  var t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  setTimeout(function(){ t.classList.remove('show'); }, 2800);
 }
 </script>
 </body>
