@@ -407,7 +407,8 @@ body{
 
 <script>
 // ─── CONFIG ──────────────────────────────────────────────────────────
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw5VPCXnn8ae1upCDb5DbkaDRyaKjJmUvVqqL-gphL2srZ8_mblqmDniCn2EuNSrDkfPg/exec';
+// Web App URL · deploy mới ngày 02/07/2026
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyDPQtndJeSRLZFGabgOn62x27hvGmU6tK7214CPWux4LqpXTddv8CXobNnY1f3bRst_g/exec';
 
 // ─── STATE ───────────────────────────────────────────────────────────
 const state = { branch: null, csat: null, nps: null };
@@ -447,6 +448,9 @@ function updateProgress() {
 
 // ─── SUBMIT ──────────────────────────────────────────────────────────
 function submit() {
+  if (WEB_APP_URL.indexOf('script.google.com') === -1) {
+    showToast('⚠️ Chưa cấu hình link Web App — mở file, thay DAN_LINK_MOI_VAO_DAY ở dòng CONFIG'); return;
+  }
   var playerName = (document.getElementById('playerName') ? document.getElementById('playerName').value : '').trim();
   if (!playerName)        { showToast('Vui lòng nhập tên tài khoản (câu 1)'); return; }
   if (!state.branch)      { showToast('Vui lòng chọn cơ sở (câu 2)'); return; }
